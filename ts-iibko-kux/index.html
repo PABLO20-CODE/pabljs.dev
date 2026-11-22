@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TS'ÍIBKO KUX — Life in the Code. Local Heartbeat. Living Infrastructure.</title>
+  <style>
+    :root {
+      --bg: #080808;
+      --surface: #111111;
+      --surface-hover: #181818;
+      --text: #f5f5f5;
+      --muted: #9a9a9a;
+      --border: #262626;
+      --accent: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Navegación superior minimalista */
+    header {
+      border-bottom: 1px solid var(--border);
+      background: rgba(8, 8, 8, 0.92);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .nav-wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 1.15rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .brand {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    nav {
+      display: flex;
+      gap: 1.35rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--accent); }
+    .back-pill {
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.85rem;
+      border-radius: 4px;
+      color: var(--text);
+    }
+    .back-pill:hover { border-color: var(--accent); }
+
+    /* Hero Editorial Alto Contraste */
+    .hero {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 5.5rem 1.5rem 4.5rem;
+      border-bottom: 1px solid var(--border);
+      background: radial-gradient(circle at 75% 30%, #1c1c1c 0%, #080808 65%);
+    }
+    .kicker {
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.1rem;
+    }
+    .hero h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1.08;
+      margin-bottom: 0.85rem;
+      color: var(--accent);
+    }
+    .motto {
+      font-size: clamp(0.85rem, 1.6vw, 1.05rem);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #d4d4d4;
+      margin-bottom: 2rem;
+      font-weight: 500;
+    }
+    .hero-desc {
+      max-width: 660px;
+      color: var(--muted);
+      font-size: 1.02rem;
+      margin-bottom: 2.25rem;
+    }
+    .actions {
+      display: flex;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.8rem 1.5rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      border: 1px solid var(--accent);
+    }
+    .btn-primary:hover { background: #dcdcdc; }
+    .btn-secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--accent); }
+
+    /* Secciones */
+    section {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+    .section-tag {
+      font-size: 0.75rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* Grid de 3 pilares */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.65rem;
+      border-radius: 6px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .card:hover {
+      border-color: #525252;
+      background: var(--surface-hover);
+    }
+    .card-num {
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      margin-bottom: 0.65rem;
+      display: block;
+    }
+    .card h3 {
+      font-size: 1.08rem;
+      margin-bottom: 0.6rem;
+      color: var(--accent);
+    }
+    .card p {
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    /* Bloque de Métricas / Infraestructura */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .metric-box {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 1.25rem;
+      border-radius: 6px;
+    }
+    .metric-val {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .metric-lbl {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 0.25rem;
+    }
+
+    /* Manifiesto */
+    blockquote {
+      border-left: 2px solid var(--accent);
+      padding-left: 1.35rem;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.18rem;
+      color: #e5e5e5;
+      max-width: 780px;
+      margin-bottom: 1rem;
+    }
+
+    footer {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 2.25rem 1.5rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="nav-wrap">
+      <a href="#" class="brand">TS'ÍIBKO KUX</a>
+      <nav>
+        <a href="#pilares">Pilares</a>
+        <a href="#infraestructura">Infraestructura</a>
+        <a href="#manifiesto">Manifiesto</a>
+        <a href="../" class="back-pill">← Portafolio</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="kicker">U k'iinil túumben kuxtal · Cansahcab, Yucatán</div>
+    <h1>TS'ÍIBKO KUX</h1>
+    <div class="motto">LIFE IN THE CODE. LOCAL HEARTBEAT. LIVING INFRASTRUCTURE.</div>
+    <p class="hero-desc">
+      La fusión entre la precisión del software local y la narrativa visual en alto contraste. Desarrollamos
+      arquitecturas web limpias, sistemas estables y producción audiovisual con identidad propia desde Yucatán.
+    </p>
+    <div class="actions">
+      <a href="#pilares" class="btn btn-primary">Explorar división técnica</a>
+      <a href="../" class="btn btn-secondary">Ver perfil profesional</a>
+    </div>
+  </div>
+
+  <section id="pilares">
+    <div class="section-head">
+      <h2>Pilares Operativos</h2>
+      <span class="section-tag">01 · Arquitectura y Contenido</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <span class="card-num">01 / WEB &amp; DESPLIEGUE</span>
+        <h3>Presencia Digital y Estructura Web</h3>
+        <p>Maquetación responsiva, optimización de rendimiento, gestión de archivos en servidor y preparación para analítica y conversión.</p>
+      </div>
+      <div class="card">
+        <span class="card-num">02 / ART DIVISION</span>
+        <h3>Narrativa Visual y Contenido Social</h3>
+        <p>Fotografía aérea y documental en blanco y negro de alto contraste, encuadre editorial y edición de video corto para plataformas digitales.</p>
+      </div>
+      <div class="card">
+        <span class="card-num">03 / TS'ÍIBKO | LÚUM</span>
+        <h3>Sistemas Locales y Automatización</h3>
+        <p>Desarrollo en Python, bases de datos SQLite y administración de entornos Linux enfocados en estabilidad, orden de datos y soberanía operativa.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="infraestructura">
+    <div class="section-head">
+      <h2>Estándar Técnico</h2>
+      <span class="section-tag">02 · Rendimiento y Control</span>
+    </div>
+    <div class="metrics">
+      <div class="metric-box">
+        <div class="metric-val">100%</div>
+        <div class="metric-lbl">Control local y arquitectura limpia</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-val">0 &amp; 1</div>
+        <div class="metric-lbl">Código y estética en equilibrio</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-val">360°</div>
+        <div class="metric-lbl">Web, contenido visual y soporte</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="manifiesto">
+    <div class="section-head">
+      <h2>Identidad</h2>
+      <span class="section-tag">03 · Filosofía</span>
+    </div>
+    <blockquote>
+      "El trabajo real deja huella tanto en la tierra como en el código. Construimos infraestructura viva con rigor técnico y sensibilidad visual."
+    </blockquote>
+    <p style="color: var(--muted); font-size: 0.9rem;">
+      Pablo Francisco Canché Canché · Fundador de TS'ÍIBKO KUX · YouTube: @TSÍÍBKO_KUX
+    </p>
+  </section>
+
+  <footer>
+    <span>TS'ÍIBKO KUX — Life in the Code. Local Heartbeat. Living Infrastructure.</span>
+    <span>Cansahcab, Yucatán, México</span>
+  </footer>
+
+</body>
+</html>
