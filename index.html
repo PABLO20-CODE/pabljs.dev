@@ -939,39 +939,49 @@
       }
     }
 
-    /* Corrección visual: foto hasta la segunda órbita, anillos visibles y badges por fuera */
+    /* Ajuste fino: encuadre del retrato a la 2da órbita, anillos visibles y badges separados */
     .orbit-stage .avatar-core {
       width: 340px;
       height: 340px;
-      z-index: 2;
+      z-index: 1;
     }
-    .orbit-stage .orbit-outer,
+    .orbit-stage .avatar-core img {
+      object-fit: cover;
+      object-position: center 22%;
+    }
     .orbit-stage .orbit-inner {
+      z-index: 2;
+      border-color: rgba(168, 85, 247, 0.55);
+      pointer-events: none;
+    }
+    .orbit-stage .orbit-outer {
       z-index: 3;
+      border: 1px dashed rgba(200, 243, 93, 0.45);
       pointer-events: none;
     }
     .orbit-stage .float-badge {
       z-index: 5;
-      border-color: rgba(200, 243, 93, 0.55);
+      border: 1px solid #c8f35d;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
     }
-    .orbit-stage .fb-top-left  { top: -10px; left: -34px; }
-    .orbit-stage .fb-top-right { top: -8px;  right: -42px; }
-    .orbit-stage .fb-mid-left  { left: -68px; top: 162px; }
-    .orbit-stage .fb-mid-right { right: -78px; top: 164px; }
-    .orbit-stage .fb-bot-left  { bottom: -10px; left: -28px; }
-    .orbit-stage .fb-bot-right { bottom: -10px; right: -44px; }
+    .orbit-stage .fb-top-left  { top: -14px; left: -46px; }
+    .orbit-stage .fb-top-right { top: -12px; right: -56px; }
+    .orbit-stage .fb-mid-left  { left: -94px; top: 160px; }
+    .orbit-stage .fb-mid-right { right: -104px; top: 162px; }
+    .orbit-stage .fb-bot-left  { bottom: -14px; left: -40px; }
+    .orbit-stage .fb-bot-right { bottom: -14px; right: -58px; }
 
     @media (max-width: 920px) {
       .orbit-stage .avatar-core {
         width: 280px;
         height: 280px;
       }
-      .orbit-stage .fb-top-left  { top: -8px; left: -14px; }
-      .orbit-stage .fb-top-right { top: -6px; right: -16px; }
-      .orbit-stage .fb-mid-left  { left: -28px; top: 130px; }
-      .orbit-stage .fb-mid-right { right: -32px; top: 132px; }
-      .orbit-stage .fb-bot-left  { bottom: -8px; left: -12px; }
-      .orbit-stage .fb-bot-right { bottom: -8px; right: -16px; }
+      .orbit-stage .fb-top-left  { top: -10px; left: -18px; }
+      .orbit-stage .fb-top-right { top: -8px; right: -22px; }
+      .orbit-stage .fb-mid-left  { left: -38px; top: 128px; }
+      .orbit-stage .fb-mid-right { right: -42px; top: 130px; }
+      .orbit-stage .fb-bot-left  { bottom: -10px; left: -16px; }
+      .orbit-stage .fb-bot-right { bottom: -10px; right: -22px; }
     }
   </style>
 </head>
