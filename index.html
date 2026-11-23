@@ -939,37 +939,39 @@
       }
     }
 
-    /* Foto ajustada hasta la segunda órbita (340px escritorio / 280px móvil) */
+    /* Corrección visual: foto hasta la segunda órbita, anillos visibles y badges por fuera */
     .orbit-stage .avatar-core {
       width: 340px;
       height: 340px;
       z-index: 2;
     }
-    .orbit-stage .orbit-outer {
+    .orbit-stage .orbit-outer,
+    .orbit-stage .orbit-inner {
       z-index: 3;
       pointer-events: none;
     }
     .orbit-stage .float-badge {
-      z-index: 4;
+      z-index: 5;
+      border-color: rgba(200, 243, 93, 0.55);
     }
-    .orbit-stage .fb-top-left  { top: 8px; left: -16px; }
-    .orbit-stage .fb-top-right { top: 12px; right: -20px; }
-    .orbit-stage .fb-mid-left  { left: -36px; top: 168px; }
-    .orbit-stage .fb-mid-right { right: -36px; top: 172px; }
-    .orbit-stage .fb-bot-left  { bottom: 10px; left: -10px; }
-    .orbit-stage .fb-bot-right { bottom: 8px; right: -14px; }
+    .orbit-stage .fb-top-left  { top: -10px; left: -34px; }
+    .orbit-stage .fb-top-right { top: -8px;  right: -42px; }
+    .orbit-stage .fb-mid-left  { left: -68px; top: 162px; }
+    .orbit-stage .fb-mid-right { right: -78px; top: 164px; }
+    .orbit-stage .fb-bot-left  { bottom: -10px; left: -28px; }
+    .orbit-stage .fb-bot-right { bottom: -10px; right: -44px; }
 
     @media (max-width: 920px) {
       .orbit-stage .avatar-core {
         width: 280px;
         height: 280px;
       }
-      .orbit-stage .fb-top-left  { top: 4px; left: -8px; }
-      .orbit-stage .fb-top-right { top: 6px; right: -10px; }
-      .orbit-stage .fb-mid-left  { left: -16px; top: 135px; }
-      .orbit-stage .fb-mid-right { right: -16px; top: 138px; }
-      .orbit-stage .fb-bot-left  { bottom: 6px; left: -6px; }
-      .orbit-stage .fb-bot-right { bottom: 4px; right: -8px; }
+      .orbit-stage .fb-top-left  { top: -8px; left: -14px; }
+      .orbit-stage .fb-top-right { top: -6px; right: -16px; }
+      .orbit-stage .fb-mid-left  { left: -28px; top: 130px; }
+      .orbit-stage .fb-mid-right { right: -32px; top: 132px; }
+      .orbit-stage .fb-bot-left  { bottom: -8px; left: -12px; }
+      .orbit-stage .fb-bot-right { bottom: -8px; right: -16px; }
     }
   </style>
 </head>
