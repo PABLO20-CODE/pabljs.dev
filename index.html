@@ -925,9 +925,15 @@
     @media (prefers-reduced-motion: reduce) {
     }
 
-    /* Retrato circular ajustado a la segunda órbita (.orbit-inner) */
+    /* Retrato ajustado hasta la segunda órbita (.orbit-outer: 340px / 280px móvil) */
     .avatar-core {
     }
+    .orbit-outer {
+      pointer-events: none;
+    }
+    .orbit-stage .float-badge {
+    }
+
     @media (max-width: 920px) {
       .avatar-core {
       }
