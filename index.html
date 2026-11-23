@@ -941,13 +941,17 @@
 
     /* Ajuste fino: encuadre del retrato a la 2da órbita, anillos visibles y badges separados */
     .orbit-stage .orbit-inner {
+      width: 372px;
+      height: 372px;
       z-index: 1;
-      border-color: rgba(168, 85, 247, 0.55);
+      border: 1px dashed rgba(168, 85, 247, 0.65);
       pointer-events: none;
     }
     .orbit-stage .orbit-outer {
+      width: 416px;
+      height: 416px;
       z-index: 2;
-      border: 1px dashed rgba(200, 243, 93, 0.45);
+      border: 1px dashed rgba(200, 243, 93, 0.55);
       pointer-events: none;
     }
     .orbit-stage .avatar-core {
@@ -976,6 +980,14 @@
       .orbit-stage .avatar-core {
         width: 280px;
         height: 280px;
+      }
+      .orbit-stage .orbit-inner {
+        width: 306px;
+        height: 306px;
+      }
+      .orbit-stage .orbit-outer {
+        width: 338px;
+        height: 338px;
       }
       .orbit-stage .fb-top-left  { top: -10px; left: -18px; }
       .orbit-stage .fb-top-right { top: -8px; right: -22px; }
