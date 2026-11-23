@@ -1716,17 +1716,198 @@
       if (stackHeadSpans[1]) stackHeadSpans[1].textContent = t.stackSub;
     }
 
+    const fullEsToEn = {
+      "Inicio": "Home",
+      "Portafolio": "Portfolio",
+      "Pablo Canché | TS'ÍIBKO · Cansahcab, Yucatán": "Pablo Canché | TS'ÍIBKO · Cansahcab, Yucatan",
+      "¡Hola! bienvenido a mi mundo virtual": "Hi! Welcome to my virtual world",
+      "Construyo estructuras sólidas, protejo lo que importa, automatizo procesos y doy forma visual a las ideas con carácter propio.": "I build solid structures, protect what matters, automate processes, and shape ideas visually with a distinct voice.",
+      "Explora mi mundo →": "Explore my world →",
+      "Recursos y notas ↓": "Resources & notes ↓",
+      "Identidad base": "Core identity",
+      "Juego ARG": "ARG game",
+      "Sistemas": "Systems",
+      "Orden y control": "Order & control",
+      "Seguridad": "Security",
+      "Resguardo": "Safeguarding",
+      "Automatización": "Automation",
+      "Flujos ágiles": "Agile workflows",
+      "Producción visual": "Visual production",
+      "Mi stack y entorno": "My stack & setup",
+      "100% local · TS'ÍIBKO | LÚUM": "100% local · TS'ÍIBKO | LÚUM",
+      "Sobre mí": "About me",
+      "Quién soy y qué me mueve, en pocas líneas.": "Who I am and what drives me, in a few lines.",
+      "Construyo sistemas ordenados y soluciones web funcionales desde cero, pensados para aguantar sin parches constantes.": "I build structured systems and functional web solutions from scratch, designed to hold up without constant patches.",
+      "Aplico criterio de seguridad, control de entornos y protección de datos en cada paso.": "I apply a security mindset, environment control, and data protection at every step.",
+      "Automatizo tareas y flujos repetitivos para que todo corra con orden, precisión y sin errores innecesarios.": "I automate repetitive tasks and workflows so everything runs with order, precision, and no unnecessary errors.",
+      "Diseño retos, misterios y narrativas interactivas tipo juego ARG con pistas cifradas y estética propia en S I N ▲ P S [ ] S.": "I design ARG-style challenges, mysteries, and interactive narratives with encrypted clues and a distinct aesthetic in S I N ▲ P S [ ] S.",
+      "Produzco y edito piezas visuales y audiovisuales con mirada estética, ritmo y narrativa propia en @TSÍÍBKO_KUX.": "I produce and edit visual and audiovisual pieces with aesthetic vision, pacing, and my own narrative voice on @TSÍÍBKO_KUX.",
+      "Trabajo directo desde Cansahcab, Yucatán, conectando lógica técnica y sensibilidad visual sin adornos vacíos.": "I work directly from Cansahcab, Yucatan, connecting technical logic and visual sensitivity without empty ornament.",
+      "Más sobre mi carrera y CV ↗": "More about my career & CV ↗",
+      "Lógica y ejecución": "Logic & execution",
+      "Código limpio, criterio práctico y control total.": "Clean code, practical judgment, and full control.",
+      "Juegos ARG": "ARG games",
+      "Lo que he construido": "What I have built",
+      "Sistemas, juegos ARG, herramientas web y piezas visuales que puedes explorar hoy mismo.": "Systems, ARG games, web tools, and visual pieces you can explore today.",
+      "JUEGO ARG": "ARG GAME",
+      "Juego ARG de acertijos visuales, enigmas y pistas ocultas diseñado para explorar y descifrar paso a paso.": "ARG game of visual riddles, enigmas, and hidden clues designed to explore and decipher step by step.",
+      "Entrar al juego ARG ↗": "Enter the ARG game ↗",
+      "ALTERNATE REALITY GAME": "ALTERNATE REALITY GAME",
+      "Misterio interactivo, señales y acertijos": "Interactive mystery, signals, and riddles",
+      "Acertijos": "Riddles",
+      "Pistas ocultas": "Hidden clues",
+      "SISTEMA": "SYSTEM",
+      "Arquitectura y gestión local": "Local architecture & management",
+      "Bases firmes y flujos organizados para operar con estabilidad y control total.": "Solid foundations and organized workflows to operate with stability and full control.",
+      "Ver detalle →": "View details →",
+      "Entorno estructurado y módulos organizados": "Structured environment and organized modules",
+      "Estabilidad": "Stability",
+      "Control de flujo": "Flow control",
+      "Arquitectura limpia": "Clean architecture",
+      "WEB Y AUTOMATIZACIÓN": "WEB & AUTOMATION",
+      "Aplicaciones y procesos a medida": "Custom apps & processes",
+      "Soluciones web funcionales y rutinas automatizadas que ahorran tiempo y reducen fricción.": "Functional web solutions and automated routines that save time and reduce friction.",
+      "Interfaces claras y tareas automatizadas": "Clear interfaces and automated tasks",
+      "Menos fricción": "Less friction",
+      "Procesos ágiles": "Agile processes",
+      "A medida": "Custom-built",
+      "PRODUCCIÓN VISUAL": "VISUAL PRODUCTION",
+      "@TSÍÍBKO_KUX y narrativa": "@TSÍÍBKO_KUX & storytelling",
+      "Piezas audiovisuales, fotografía y edición con atmósfera, intención y voz propia.": "Audiovisual pieces, photography, and editing with atmosphere, intent, and a distinct voice.",
+      "Ver canal @TSÍÍBKO_KUX ↗": "Open @TSÍÍBKO_KUX channel ↗",
+      "AUDIOVISUAL": "AUDIOVISUAL",
+      "Composición, ritmo y relato desde Yucatán": "Composition, rhythm & storytelling from Yucatan",
+      "Edición": "Editing",
+      "Fotografía": "Photography",
+      "Identidad visual": "Visual identity",
+      "Recursos y accesos": "Resources & links",
+      "Para explorar proyectos, enigmas y herramientas directas.": "Explore projects, enigmas, and direct tools.",
+      "S I N ▲ P S [ ] S — Juego ARG": "S I N ▲ P S [ ] S — ARG Game",
+      "Pistas cifradas y retos interactivos": "Encrypted clues & interactive challenges",
+      "Canal @TSÍÍBKO_KUX": "@TSÍÍBKO_KUX Channel",
+      "Producción audiovisual desde Yucatán": "Audiovisual production from Yucatan",
+      "Hub de enlaces · pablito.developer": "Link hub · pablito.developer",
+      "Todos mis canales oficiales en un lugar": "All my official channels in one place",
+      "Perfil técnico y CV completo": "Technical profile & full CV",
+      "Especialidades, stack y trayectoria": "Specialties, stack & background",
+      "Catálogo completo de proyectos": "Full project catalog",
+      "Sistemas, seguridad, web y visual": "Systems, security, web & visual",
+      "Checklist de seguridad y entorno": "Security & environment checklist",
+      "Criterios básicos de resguardo y control": "Core safeguarding & control guidelines",
+      "Bitácora técnica": "Technical log",
+      "Notas sobre arquitectura, automatización, seguridad y narrativa visual.": "Notes on architecture, automation, security, and visual storytelling.",
+      "★ BITÁCORA TS'ÍIBKO": "★ TS'ÍIBKO LOG",
+      "Orden, código limpio y narrativa propia desde Cansahcab": "Order, clean code & original storytelling from Cansahcab",
+      "Apuntes prácticos sobre cómo construir sistemas estables, proteger entornos, automatizar flujos y dar intención visual a cada pieza.": "Practical notes on building stable systems, protecting environments, automating workflows, and giving visual intent to every piece.",
+      "Cómo estructurar un proyecto para que no se rompa al crecer": "How to structure a project so it does not break as it scales",
+      "Criterios básicos para cuidar entornos, datos y operación": "Core criteria for protecting environments, data, and operations",
+      "Automatizar lo repetitivo sin perder el control humano": "Automating repetitive work without losing human control",
+      "Construyendo enigmas y capas en S I N ▲ P S [ ] S": "Building enigmas and layers in S I N ▲ P S [ ] S",
+      "CV · Pablo Francisco Canché Canché": "CV · Pablo Francisco Canché Canché",
+      "TS'ÍIBKO KUX · Cansahcab, Yucatán, México.": "TS'ÍIBKO KUX · Cansahcab, Yucatan, Mexico.",
+      "Áreas de especialidad": "Areas of expertise",
+      "Desarrollo Web y Sistemas": "Web & Systems Development",
+      "Construcción de aplicaciones web, portafolios, estructuras locales y herramientas funcionales a medida.": "Building web applications, portfolios, local structures, and custom functional tools.",
+      "Seguridad y Control de Entornos": "Security & Environment Control",
+      "Resguardo de información, orden operativo, control de permisos y continuidad de sistemas.": "Information protection, operational order, permission control, and system continuity.",
+      "Automatización de Procesos": "Process Automation",
+      "Automated workflows to reduce repetitive tasks and speed up deliveries with accuracy.": "Automated workflows to reduce repetitive tasks and speed up deliveries with accuracy.",
+      "Producción Audiovisual y Narrativa ARG": "Audiovisual Production & ARG Narrative",
+      "Dirección visual, edición en @TSÍÍBKO_KUX y diseño de experiencias interactivas en S I N ▲ P S [ ] S.": "Visual direction, editing on @TSÍÍBKO_KUX, and interactive experience design in S I N ▲ P S [ ] S.",
+      "Identidad y canales activos": "Identity & active channels",
+      "Marca y ecosistema: TS'ÍIBKO / TS'ÍIBKO KUX": "Brand & ecosystem: TS'ÍIBKO / TS'ÍIBKO KUX",
+      "Operación independiente desde Cansahcab, Yucatán, México.": "Independent operation from Cansahcab, Yucatan, Mexico.",
+      "Sitio principal: pabljs.dev": "Main site: pabljs.dev",
+      "Portafolio, bitácora técnica y proyectos activos.": "Portfolio, technical log, and active projects.",
+      "Juego ARG: S I N ▲ P S [ ] S": "ARG Game: S I N ▲ P S [ ] S",
+      "Contacto directo": "Direct contact",
+      "Portafolio completo": "Full portfolio",
+      "Todos mis proyectos activos, sistemas y universos creativos.": "All my active projects, systems, and creative worlds.",
+      "Juego visual, enigmas y pistas ocultas": "Visual game, enigmas & hidden clues",
+      "Misterio interactivo y señales cifradas": "Interactive mystery & encrypted signals",
+      "Producción visual, recorridos, fotografía y edición con identidad propia desde Yucatán.": "Visual production, walkthroughs, photography, and editing with a distinct identity from Yucatan.",
+      "Abrir canal de YouTube ↗": "Open YouTube channel ↗",
+      "Narrativa visual y edición atmosférica": "Visual storytelling & atmospheric editing",
+      "Ecosistema local de ingeniería de software, seguridad y automatización sin dependencias innecesarias.": "Local software engineering, security, and automation ecosystem without unnecessary dependencies.",
+      "Control total, orden y continuidad": "Full control, order & continuity",
+      "SITIO OFICIAL": "OFFICIAL SITE",
+      "Hub central de identidad técnica, proyectos, bitácora y contacto profesional.": "Central hub for technical identity, projects, log, and professional contact.",
+      "Identidad web de Pablo Canché | TS'ÍIBKO": "Web identity of Pablo Canché | TS'ÍIBKO",
+      "✦ Consulta rápida · pabljs.dev": "✦ Quick inquiry · pabljs.dev",
+      "Elige una pregunta para conocer más sobre el trabajo de Pablo Canché | TS'ÍIBKO.": "Choose a question to learn more about Pablo Canché | TS'ÍIBKO's work.",
+      "¿Quién es Pablo Canché | TS'ÍIBKO?": "Who is Pablo Canché | TS'ÍIBKO?",
+      "¿Qué es S I N ▲ P S [ ] S?": "What is S I N ▲ P S [ ] S?",
+      "¿Cómo puedo contactarlo?": "How can I contact him?",
+      "✦ Pregunta sobre pabljs.dev": "✦ Question about pabljs.dev",
+      "DETALLE": "DETAILS",
+      "Cerrar ✕": "Close ✕",
+      "Título": "Title",
+      "Contenido": "Content",
+      "Entendido": "Got it",
+      "Pablo Francisco Canché Canché · TS'ÍIBKO KUX. Estructuras sólidas, seguridad, automatización, juegos ARG y producción visual desde Cansahcab, Yucatán, México.": "Pablo Francisco Canché Canché · TS'ÍIBKO KUX. Solid structures, security, automation, ARG games, and visual production from Cansahcab, Yucatan, Mexico.",
+      "Conectemos →": "Let's connect →",
+      "Explora": "Explore",
+      "Canales": "Channels",
+      "Cansahcab, Yucatán: © 2026 pabljs.dev · TS'ÍIBKO. Todos los derechos reservados.": "Cansahcab, Yucatan: © 2026 pabljs.dev · TS'ÍIBKO. All rights reserved.",
+      "↑ Volver arriba": "↑ Back to top"
+    };
+
+    const originalTextNodes = new Map();
+
+    function collectTextNodes() {
+      const root = document.body;
+      if (!root) return;
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const parent = node.parentElement;
+          if (!parent) return NodeFilter.FILTER_REJECT;
+          const tag = parent.tagName;
+          if (["SCRIPT", "STYLE", "NOSCRIPT", "CODE", "PRE"].includes(tag)) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          if (!node.nodeValue || !node.nodeValue.trim()) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+
+      let current;
+      while ((current = walker.nextNode())) {
+        if (!originalTextNodes.has(current)) {
+          originalTextNodes.set(current, current.nodeValue);
+        }
+      }
+    }
+
+    function applyFullLang(lang) {
+      collectTextNodes();
+      document.documentElement.lang = lang;
+
+      originalTextNodes.forEach((origVal, node) => {
+        if (!node.isConnected) return;
+        const trimmed = origVal.trim();
+        if (lang === "es") {
+          node.nodeValue = origVal;
+        } else if (lang === "en" && Object.prototype.hasOwnProperty.call(fullEsToEn, trimmed)) {
+          node.nodeValue = origVal.replace(trimmed, fullEsToEn[trimmed]);
+        }
+      });
+    }
+
     const langEs = document.getElementById("langEs");
     const langEn = document.getElementById("langEn");
+
     langEs.addEventListener("click", () => {
       langEs.classList.add("active");
       langEn.classList.remove("active");
-      applyLang("es");
+      applyFullLang("es");
     });
+
     langEn.addEventListener("click", () => {
       langEn.classList.add("active");
       langEs.classList.remove("active");
-      applyLang("en");
+      applyFullLang("en");
     });
 
     const tabCore = document.getElementById("tabCore");
