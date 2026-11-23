@@ -938,6 +938,39 @@
       .avatar-core {
       }
     }
+
+    /* Foto ajustada hasta la segunda órbita (340px escritorio / 280px móvil) */
+    .orbit-stage .avatar-core {
+      width: 340px;
+      height: 340px;
+      z-index: 2;
+    }
+    .orbit-stage .orbit-outer {
+      z-index: 3;
+      pointer-events: none;
+    }
+    .orbit-stage .float-badge {
+      z-index: 4;
+    }
+    .orbit-stage .fb-top-left  { top: 8px; left: -16px; }
+    .orbit-stage .fb-top-right { top: 12px; right: -20px; }
+    .orbit-stage .fb-mid-left  { left: -36px; top: 168px; }
+    .orbit-stage .fb-mid-right { right: -36px; top: 172px; }
+    .orbit-stage .fb-bot-left  { bottom: 10px; left: -10px; }
+    .orbit-stage .fb-bot-right { bottom: 8px; right: -14px; }
+
+    @media (max-width: 920px) {
+      .orbit-stage .avatar-core {
+        width: 280px;
+        height: 280px;
+      }
+      .orbit-stage .fb-top-left  { top: 4px; left: -8px; }
+      .orbit-stage .fb-top-right { top: 6px; right: -10px; }
+      .orbit-stage .fb-mid-left  { left: -16px; top: 135px; }
+      .orbit-stage .fb-mid-right { right: -16px; top: 138px; }
+      .orbit-stage .fb-bot-left  { bottom: 6px; left: -6px; }
+      .orbit-stage .fb-bot-right { bottom: 4px; right: -8px; }
+    }
   </style>
 </head>
 <body>
