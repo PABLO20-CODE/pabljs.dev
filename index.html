@@ -1640,15 +1640,93 @@
       themeBtn.textContent = document.body.classList.contains("light") ? "☀" : "☾";
     });
 
+    const i18n = {
+      es: {
+        navInicio: "Inicio",
+        navPortafolio: "Portafolio",
+        heroTag: "Pablo Canché | TS'ÍIBKO · Cansahcab, Yucatán",
+        heroTitle: "¡Hola! bienvenido a mi mundo virtual",
+        heroSubtitle: "Construyo estructuras sólidas, protejo lo que importa, automatizo procesos y doy forma visual a las ideas con carácter propio.",
+        heroExplore: "Explora mi mundo →",
+        heroResources: "Recursos y notas ↓",
+        badgeTl: "Identidad base",
+        badgeTr: "Juego ARG",
+        badgeMl: "Orden y control",
+        badgeMr: "Resguardo",
+        badgeBl: "Flujos ágiles",
+        badgeBr: "Producción visual",
+        stackTitle: "Mi stack y entorno",
+        stackSub: "100% local · TS'ÍIBKO | LÚUM"
+      },
+      en: {
+        navInicio: "Home",
+        navPortafolio: "Portfolio",
+        heroTag: "Pablo Canché | TS'ÍIBKO · Cansahcab, Yucatan",
+        heroTitle: "Hi! Welcome to my virtual world",
+        heroSubtitle: "I build solid structures, protect what matters, automate processes, and shape ideas visually with a distinct voice.",
+        heroExplore: "Explore my world →",
+        heroResources: "Resources & notes ↓",
+        badgeTl: "Core identity",
+        badgeTr: "ARG game",
+        badgeMl: "Order & control",
+        badgeMr: "Safeguarding",
+        badgeBl: "Agile workflows",
+        badgeBr: "Visual production",
+        stackTitle: "My stack & setup",
+        stackSub: "100% local · TS'ÍIBKO | LÚUM"
+      }
+    };
+
+    function setBadgeText(selector, mainText, smallText) {
+      const el = document.querySelector(selector);
+      if (!el) return;
+      el.innerHTML = `${mainText}\n            <small>${smallText}</small>`;
+    }
+
+    function applyLang(lang) {
+      const t = i18n[lang];
+      if (!t) return;
+      document.documentElement.lang = lang;
+
+      const navBtns = document.querySelectorAll(".nav-links .nav-btn");
+      if (navBtns[0]) navBtns[0].textContent = t.navInicio;
+      if (navBtns[2]) navBtns[2].textContent = t.navPortafolio;
+
+      const heroTag = document.querySelector(".hero-tag");
+      const heroTitle = document.querySelector(".hero h1");
+      const heroSubtitle = document.querySelector(".hero-subtitle");
+      const btnPrimary = document.querySelector(".btn-primary");
+      const btnSecondary = document.querySelector(".btn-secondary");
+      const stackHeadSpans = document.querySelectorAll(".stack-head span");
+
+      if (heroTag) heroTag.textContent = t.heroTag;
+      if (heroTitle) heroTitle.textContent = t.heroTitle;
+      if (heroSubtitle) heroSubtitle.textContent = t.heroSubtitle;
+      if (btnPrimary) btnPrimary.textContent = t.heroExplore;
+      if (btnSecondary) btnSecondary.textContent = t.heroResources;
+
+      setBadgeText(".fb-top-left", "TS'ÍIBKO", t.badgeTl);
+      setBadgeText(".fb-top-right", "S I N ▲ P S [ ] S", t.badgeTr);
+      setBadgeText(".fb-mid-left", lang === "en" ? "Systems" : "Sistemas", t.badgeMl);
+      setBadgeText(".fb-mid-right", lang === "en" ? "Security" : "Seguridad", t.badgeMr);
+      setBadgeText(".fb-bot-left", lang === "en" ? "Automation" : "Automatización", t.badgeBl);
+      setBadgeText(".fb-bot-right", "@TSÍÍBKO_KUX", t.badgeBr);
+
+      if (stackHeadSpans[0]) stackHeadSpans[0].textContent = t.stackTitle;
+      if (stackHeadSpans[1]) stackHeadSpans[1].textContent = t.stackSub;
+    }
+
     const langEs = document.getElementById("langEs");
     const langEn = document.getElementById("langEn");
     langEs.addEventListener("click", () => {
       langEs.classList.add("active");
       langEn.classList.remove("active");
+      applyLang("es");
     });
     langEn.addEventListener("click", () => {
       langEn.classList.add("active");
       langEs.classList.remove("active");
+      applyLang("en");
     });
 
     const tabCore = document.getElementById("tabCore");
