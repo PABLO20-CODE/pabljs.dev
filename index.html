@@ -996,7 +996,39 @@
       .orbit-stage .fb-bot-left  { bottom: -10px; left: -16px; }
       .orbit-stage .fb-bot-right { bottom: -10px; right: -22px; }
     }
+      .luxo-photo-stage {
+      width: 100%;
+      max-width: 380px;
+      height: 240px;
+      margin: 14px 0 18px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .luxo-photo-stage model-viewer {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+    }
   </style>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+<style id="exclusive-view-fit">
+  .view-panel.active {
+    min-height: calc(100vh - 96px);
+    box-sizing: border-box;
+  }
+  .view-panel section {
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
+  }
+  .hero {
+    padding-top: 20px !important;
+    padding-bottom: 18px !important;
+  }
+</style>
+
 </head>
 <body>
   <!-- Barra superior flotante -->
@@ -1008,15 +1040,17 @@
         <button type="button" class="nav-btn active" data-view="inicio">Inicio</button>
         <button type="button" class="nav-btn" data-view="cv">CV</button>
         <button type="button" class="nav-btn" data-view="portafolio">Portafolio</button>
-        <button type="button" class="nav-btn" data-view="color">Color</button>
-        <button type="button" class="nav-btn" data-view="vip-bn">VIP · B&amp;N</button>
-        <button type="button" class="nav-btn" data-view="vip">VIP</button>
-      </div>
+        <button type="button" class="nav-btn" data-view="sobre-mi">Sobre mí</button>
+        <button type="button" class="nav-btn" data-view="proyectos">Proyectos</button>
+        <button type="button" class="nav-btn" data-view="recursos">Recursos</button>
+        <button type="button" class="nav-btn" data-view="bitacora">Bitácora</button>
+</div>
 
       <div class="nav-controls">
         <button class="pill-btn" id="themeBtn" type="button" aria-label="Cambiar tema">☾</button>
         <button class="pill-btn active" id="langEs" type="button">ES</button>
         <button class="pill-btn" id="langEn" type="button">EN</button>
+        <button class="pill-btn" id="langMaya" type="button">MAYA</button>
       </div>
     </nav>
   </header>
@@ -1032,8 +1066,8 @@
             Construyo estructuras sólidas, protejo lo que importa, automatizo procesos y doy forma visual a las ideas con carácter propio.
           </p>
           <div class="hero-actions">
-            <a href="#proyectos" class="btn-primary">Explora mi mundo →</a>
-            <a href="#recursos" class="btn-secondary">Recursos y notas ↓</a>
+            <a href="javascript:void(0)" data-view="proyectos" class="btn-primary">Explora mi mundo →</a>
+            <a href="javascript:void(0)" data-view="recursos" class="btn-secondary">Recursos y notas ↓</a>
           </div>
           <div class="hero-social">
             <a href="https://www.youtube.com/@TS%C3%8D%C3%8DBKO_KUX" target="_blank" rel="noopener" class="social-chip">YouTube · @TSÍÍBKO_KUX</a>
@@ -1121,6 +1155,19 @@
       </div>
 
       <!-- Sección Sobre mí -->
+      </section>
+
+      <!-- Sección Lo que he construido -->
+      </section>
+
+      <!-- Sección Recursos y accesos directos (cuadrícula 2 columnas como elijs.dev) -->
+      </section>
+
+      <!-- Sección Bitácora técnica (como la sección de Blog de elijs.dev) -->
+      </section>
+    </div>
+
+    <div class="view-panel" id="view-sobre-mi">
       <section id="sobre-mi">
         <div class="section-head">
           <h2>Sobre mí</h2>
@@ -1191,9 +1238,9 @@
             </div>
           </aside>
         </div>
-      </section>
+    </div>
 
-      <!-- Sección Lo que he construido -->
+    <div class="view-panel" id="view-proyectos">
       <section id="proyectos">
         <div class="section-head">
           <h2>Lo que he construido</h2>
@@ -1305,9 +1352,9 @@
             </div>
           </article>
         </div>
-      </section>
+    </div>
 
-      <!-- Sección Recursos y accesos directos (cuadrícula 2 columnas como elijs.dev) -->
+    <div class="view-panel" id="view-recursos">
       <section id="recursos">
         <div class="section-head">
           <h2>Recursos y accesos</h2>
@@ -1381,9 +1428,9 @@
             <span>→</span>
           </button>
         </div>
-      </section>
+    </div>
 
-      <!-- Sección Bitácora técnica (como la sección de Blog de elijs.dev) -->
+    <div class="view-panel" id="view-bitacora">
       <section id="bitacora">
         <div class="section-head">
           <h2>Bitácora técnica</h2>
@@ -1427,7 +1474,6 @@
             </button>
           </div>
         </div>
-      </section>
     </div>
 
     <!-- VISTA DEDICADA: CV -->
@@ -1479,6 +1525,49 @@
             </div>
           </div>
         </div>
+
+        <div id="fine-art-section" style="margin-top: 48px;">
+          <div class="section-head">
+            <h3>Fine Art · Galería</h3>
+            <p>Selección visual de 36 piezas en formato optimizado.</p>
+          </div>
+          <div id="fine-art-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; margin-top: 20px;"></div>
+        </div>
+
+        <script id="fine-art-gallery-loader">
+          (() => {
+            const grid = document.getElementById("fine-art-grid");
+            if (!grid || grid.dataset.loaded) return;
+            grid.dataset.loaded = "true";
+
+            const total = 36;
+            const frag = document.createDocumentFragment();
+
+            for (let i = 1; i <= total; i++) {
+              const card = document.createElement("figure");
+              card.style.margin = "0";
+              card.style.overflow = "hidden";
+              card.style.borderRadius = "10px";
+              card.style.aspectRatio = "4 / 3";
+              card.style.background = "rgba(255, 255, 255, 0.04)";
+
+              const img = document.createElement("img");
+              img.src = `assets/gallery_processed/foto${i}.jpg`;
+              img.alt = `Obra Fine Art ${i}`;
+              img.loading = "lazy";
+              img.decoding = "async";
+              img.style.width = "100%";
+              img.style.height = "100%";
+              img.style.objectFit = "cover";
+              img.style.display = "block";
+
+              card.appendChild(img);
+              frag.appendChild(card);
+            }
+
+            grid.appendChild(frag);
+          })();
+        </script>
       </section>
     </div>
 
@@ -1593,6 +1682,8 @@
   </div>
 
   <!-- Pie de página completo -->
+</div>
+
   <footer id="contacto">
     <div class="container">
       <div class="footer-grid">
@@ -1630,28 +1721,7 @@
         <a href="#view-inicio">↑ Volver arriba</a>
       </div>
     </div>
-    <div class="view-panel" id="view-color">
-      <section class="section">
-        <h2>Fotografía a Color</h2>
-        <p>Luz cálida que revela matices, entorno y atmósfera.</p>
-        <div id="grid-color"></div>
-      </section>
-    </div>
-    <div class="view-panel" id="view-vip-bn">
-      <section class="section">
-        <h2>VIP · Blanco y Negro</h2>
-        <p>Luz fría de alto contraste y piezas master.</p>
-        <div id="grid-vip-bn"></div>
-      </section>
-    </div>
-    <div class="view-panel" id="view-vip">
-      <section class="section">
-        <h2>Acceso VIP</h2>
-        <p>Selección exclusiva desbloqueada por la lámpara.</p>
-        <div id="grid-vip"></div>
-      </section>
-    </div>
-  </footer>
+</footer>
 
   <script>
     const navButtons = document.querySelectorAll(".nav-btn");
@@ -1682,9 +1752,9 @@
         navInicio: "Inicio",
         navPortafolio: "Portafolio",
         heroTag: "Pablo Canché | TS'ÍIBKO · Cansahcab, Yucatán",
-        heroTitle: "¡Hola! bienvenido a mi mundo virtual",
-        heroSubtitle: "Construyo estructuras sólidas, protejo lo que importa, automatizo procesos y doy forma visual a las ideas con carácter propio.",
-        heroExplore: "Explora mi mundo →",
+        heroTitle: "¡Hola! bienvenido a mi espacio virtual",
+        heroSubtitle: "Construyo estructuras sólidas, protejo lo que importa, automatizo procesos y doy forma visual a ideas con un sello propio.",
+        heroExplore: "Explorar mi mundo →",
         heroResources: "Recursos y notas ↓",
         badgeTl: "Identidad base",
         badgeTr: "Juego ARG",
@@ -1698,8 +1768,8 @@
       en: {
         navInicio: "Home",
         navPortafolio: "Portfolio",
-        heroTag: "Pablo Canché | TS'ÍIBKO · Cansahcab, Yucatan",
-        heroTitle: "Hi! Welcome to my virtual world",
+        heroTag: "Pablo Canché | TS'ÍIBKO · Cansahcab, Yucatán",
+        heroTitle: "Hi! welcome to my virtual space",
         heroSubtitle: "I build solid structures, protect what matters, automate processes, and shape ideas visually with a distinct voice.",
         heroExplore: "Explore my world →",
         heroResources: "Resources & notes ↓",
@@ -1711,13 +1781,36 @@
         badgeBr: "Visual production",
         stackTitle: "My stack & setup",
         stackSub: "100% local · TS'ÍIBKO | LÚUM"
+      },
+      yua: {
+        navInicio: "Lik'ul",
+        navPortafolio: "Múuch' meyaj",
+        heroTag: "Pablo Canché | TS'ÍIBKO · Cansahcab, Yucatán",
+        heroTitle: "¡Ba'ax ka wa'alik! K'a'ambe'en a talel tin kuxtalil",
+        heroSubtitle: "Kin beetik chichan pak'o'ob, kin kanantik ba'ax k'a'ana'an, kin ts'aik u bin meyaj tu juunal yéetel kin ts'aik u jeelil ba'ax ku tukulik máak.",
+        heroExplore: "Kaxant in kuxtal →",
+        heroResources: "K'a'ana'an ba'alo'ob yéetel ts'íibo'ob ↓",
+        badgeTl: "K'aaba' yéetel bixil",
+        badgeTr: "Báaxal ARG",
+        badgeMl: "Tsolik yéetel kanantik",
+        badgeMr: "K'u'ubul kanantik",
+        badgeBl: "Séeba'an meyaj",
+        badgeBr: "Beetik oochel",
+        stackTitle: "In nu'ukulil yéetel bix in meyaj",
+        stackSub: "100% te'ela' · TS'ÍIBKO | LÚUM"
       }
     };
-
-    function setBadgeText(selector, mainText, smallText) {
+    function setBadgeText(selector, fallbackText, newText) {
       const el = document.querySelector(selector);
       if (!el) return;
-      el.innerHTML = `${mainText}\n            <small>${smallText}</small>`;
+      const targetText = (typeof newText === "string" && newText.trim()) ? newText : fallbackText;
+      if (!targetText) return;
+      const textNode = [...el.childNodes].find((n) => n.nodeType === Node.TEXT_NODE && n.nodeValue.trim());
+      if (textNode) {
+        textNode.nodeValue = textNode.nodeValue.replace(textNode.nodeValue.trim(), targetText);
+      } else {
+        el.textContent = targetText;
+      }
     }
 
     function applyLang(lang) {
@@ -1754,6 +1847,31 @@
     }
 
     const fullEsToEn = {
+      "CV": "CV",
+      "Pregunta sobre pabljs.dev": "Ask about pabljs.dev",
+      "Contáctame →": "Contact me →",
+      "Explorar": "Explore",
+      "Ver más →": "See more →",
+      "Ver detalles →": "View details →",
+      "Ir al sitio ↗": "Visit site ↗",
+      "Quién soy y qué me mueve, en pocas palabras.": "Who I am and what drives me, in a few words.",
+      "Principios y enfoque": "Principles & approach",
+      "Código limpio, criterio práctico y cuidado en cada detalle.": "Clean code, practical judgment, and care in every detail.",
+      "Audiovisual": "Audiovisual",
+      "Sistemas, juegos ARG, herramientas web y piezas visuales que puedes explorar hoy.": "Systems, ARG games, web tools, and visual pieces you can explore today.",
+      "S I N ▲ P S [ ] S": "S I N ▲ P S [ ] S",
+      "LOCAL": "LOCAL",
+      "WORKFLOWS": "WORKFLOWS",
+      "Dirección": "Direction",
+      "Narrativa": "Narrative",
+      "Flujos automatizados para reducir tareas repetitivas y acelerar entregas con precisión.": "Automated workflows to cut repetitive tasks and speed up deliveries accurately.",
+      "INFRAESTRUCTURA": "INFRASTRUCTURE",
+      "LOCAL-FIRST": "LOCAL-FIRST",
+      "Navegación": "Navigation",
+      "Cansahcab, Yucatán: © 2026 pabljs.dev · TS'ÍIBKO. Todos los derechos reservados": "Cansahcab, Yucatan: © 2026 pabljs.dev · TS'ÍIBKO. All rights reserved",
+      "Bitácora": "Logbook",
+      "Recursos": "Resources",
+      "Proyectos": "Projects",
       "Inicio": "Home",
       "Portafolio": "Portfolio",
       "Pablo Canché | TS'ÍIBKO · Cansahcab, Yucatán": "Pablo Canché | TS'ÍIBKO · Cansahcab, Yucatan",
@@ -1917,37 +2035,273 @@
       }
     }
 
-    function applyFullLang(lang) {
-      collectTextNodes();
-      document.documentElement.lang = lang;
+    const fullEsToYua = {
+      "CV": "CV",
+      "Pregunta sobre pabljs.dev": "K'áat óolal yo'olal pabljs.dev",
+      "Contáctame →": "T'anilen →",
+      "Explorar": "Kaxant",
+      "Ver más →": "Ila'ak u maasil →",
+      "Ver detalles →": "Ila'ak u tsolil →",
+      "Ir al sitio ↗": "Bin ti' le kúuchil ↗",
+      "Quién soy y qué me mueve, en pocas palabras.": "Máaxen yéetel ba'ax ku péeksiken, ichil jump'íit t'aano'ob.",
+      "Principios y enfoque": "Tukulil yéetel beetik",
+      "Código limpio, criterio práctico y cuidado en cada detalle.": "Ts'íib jats'uts, utsil tukul yéetel kanantik tuláakal.",
+      "Audiovisual": "Oochel yéetel u'uybil",
+      "Sistemas, juegos ARG, herramientas web y piezas visuales que puedes explorar hoy.": "Sistemas, báaxalo'ob ARG, nu'ukulo'ob web yéetel oochelo'ob je'el u páajtal a kaxantik bejla'e'.",
+      "Juego ARG de acertijos visuales, enigmas y pistas ocultas diseñado para explorar y descifrar paso a paso.": "Báaxal ARG ti' t'aanilo'ob ku kaxanta'al, ta'akbil ba'alo'ob yéetel wíinkilal oochelo'ob utia'al u xak'alta'al chéen jump'íit jump'íit.",
+      "ALTERNATE REALITY GAME": "BÁAXAL TI' ULA'AK' KUXTALIL",
+      "Misterio interactivo, señales y acertijos": "Ta'akbil ba'al, chíikulilo'ob yéetel t'aanilo'ob",
+      "Acertijos": "T'aanilo'ob",
+      "Pistas ocultas": "Ta'akbil wíinkilal",
+      "Arquitectura y gestión local": "Tsolik kúuchil yéetel nu'uktik te'ela'",
+      "Bases firmes y flujos organizados para operar con estabilidad y control total.": "K'a'ana'an chuunpajo'ob yéetel tsola'an bin meyaj utia'al u p'áatal ma' u k'a'abéettal u yutskinta'al mantats'.",
+      "LOCAL": "TE'ELA'",
+      "Entorno estructurado y módulos organizados": "Tsola'an kúuchil yéetel tsola'an táano'ob",
+      "Estabilidad": "Ma' u k'askúuntikuba",
+      "Control de flujo": "Kanantik u bin meyaj",
+      "Arquitectura limpia": "Jats'uts tsolik",
+      "Aplicaciones y procesos a medida": "Nu'ukulo'ob yéetel bin meyaj je'el bix k'a'abéete'",
+      "Soluciones web funcionales y rutinas automatizadas que ahorran tiempo y reducen fricción.": "Web nu'ukulo'ob ku meyaj tubeel yéetel meyajo'ob tu juunal ku chíikbesik k'iin yéetel ma' u talamkúuntik.",
+      "WORKFLOWS": "BIN MEYAJO'OB",
+      "Interfaces claras y tareas automatizadas": "Chíikulilo'ob sáasil yéetel meyajo'ob tu juunal",
+      "Menos fricción": "Ma' talami'",
+      "Procesos ágiles": "Séeba'an bin meyaj",
+      "A medida": "Bix k'a'abéet",
+      "@TSÍÍBKO_KUX y narrativa": "@TSÍÍBKO_KUX yéetel tsikbal",
+      "Piezas audiovisuales, fotografía y edición con atmósfera, intención y voz propia.": "Oochelo'ob, u'uybil-ila'bil yéetel tsikbal ku yantal u tukulil yéetel u juunal t'aan.",
+      "Composición, ritmo y relato desde Yucatán": "Tsolik, péekbal yéetel tsikbal desde Yucatán",
+      "Dirección": "Tojkinik",
+      "Narrativa": "Tsikbal",
+      "Para explorar proyectos, enigmas y herramientas directas.": "Utia'al u kaxanta'al meyajo'ob, ta'akbil ba'alo'ob yéetel nu'ukulo'ob.",
+      "S I N ▲ P S [ ] S — Juego ARG": "S I N ▲ P S [ ] S — Báaxal ARG",
+      "Pistas cifradas y retos interactivos": "Ta'akbil wíinkilal yéetel talamilo'ob",
+      "Canal @TSÍÍBKO_KUX": "Beel @TSÍÍBKO_KUX",
+      "Producción audiovisual desde Yucatán": "Beetik oochel desde Yucatán",
+      "Hub de enlaces · pablito.developer": "Múuch' beelo'ob · pablito.developer",
+      "Todos mis canales oficiales en un lugar": "Tuláakal in beelo'ob ti' jump'éelili' kúuchil",
+      "Perfil técnico y CV completo": "Bixil meyaj yéetel chuup CV",
+      "Especialidades, stack y trayectoria": "Ba'ax ojela'an, nu'ukulo'ob yéetel beelil",
+      "Catálogo completo de proyectos": "Chuup tsolil meyajo'ob",
+      "Sistemas, seguridad, web y visual": "Sistemas, seguridad, web yéetel oochel",
+      "Checklist de seguridad y entorno": "Tsolil kanantik seguridad yéetel kúuchil",
+      "Criterios básicos de resguardo y control": "Chuun tukulil kanantik yéetel nu'uktik",
+      "Notas sobre arquitectura, automatización, seguridad y narrativa visual.": "Notas sobre arquitectura, automatización, seguridad y narrativa visual.",
+      "Orden, código limpio y narrativa propia desde Cansahcab": "Tsola'an, jats'uts ts'íib yéetel juunal tsikbal desde Cansahcab",
+      "Apuntes prácticos sobre cómo construir sistemas estables, proteger entornos, automatizar flujos y dar intención visual a cada pieza.": "Ts'íibo'ob utia'al u beeta'al sistemas ma' u k'askúuntikuba, u kananta'al kúuchilo'ob, u ts'a'abal tu juunal bin meyaj yéetel u ts'a'abal tukulil ti' cada oochel.",
+      "Cómo estructurar un proyecto para que no se rompa al crecer": "Bix u tsola'al jump'éel meyaj utia'al ma' u p'áatal k'aasil ken nojochak",
+      "Criterios básicos para cuidar entornos, datos y operación": "Chuun tukulil utia'al u kananta'al kúuchilo'ob, ba'alo'ob yéetel meyaj",
+      "Automatizar lo repetitivo sin perder el control humano": "Ts'aik tu juunal ba'ax ku suut u beeta'al ma' u sa'atal u kanantik máak",
+      "Construyendo enigmas y capas en S I N ▲ P S [ ] S": "Beetik ta'akbil ba'alo'ob yéetel táano'ob ti' S I N ▲ P S [ ] S",
+      "TS'ÍIBKO KUX · Cansahcab, Yucatán, México.": "TS'ÍIBKO KUX · Cansahcab, Yucatán, México.",
+      "Desarrollo Web y Sistemas": "Beetik Web yéetel Sistemas",
+      "Construcción de aplicaciones web, portafolios, estructuras locales y herramientas funcionales a medida.": "Beetik web nu'ukulo'ob, múuch' meyajo'ob, te'ela' tsola'an ba'alo'ob yéetel nu'ukulo'ob ku meyaj tubeel.",
+      "Seguridad y Control de Entornos": "Seguridad yéetel Kanantik Kúuchilo'ob",
+      "Resguardo de información, orden operativo, control de permisos y continuidad de sistemas.": "Kanantik ts'íibo'ob, tsola'an meyaj, kanantik páajtalil yéetel ma' u p'áatal sistemas.",
+      "Automatización de Procesos": "Ts'aik tu juunal Bin Meyajo'ob",
+      "Flujos automatizados para reducir tareas repetitivas y acelerar entregas con precisión.": "Bin meyajo'ob tu juunal utia'al u p'áatal ma' u suut u beeta'al meyajo'ob yéetel u séeba'antal u k'u'ubul.",
+      "Producción Audiovisual y Narrativa ARG": "Beetik Oochel yéetel Tsikbal ARG",
+      "Dirección visual, edición en @TSÍÍBKO_KUX y diseño de experiencias interactivas en S I N ▲ P S [ ] S.": "Tojkinik oochel, utskíintik ti' @TSÍÍBKO_KUX yéetel tsolik báaxalo'ob ti' S I N ▲ P S [ ] S.",
+      "Identidad y canales activos": "K'aaba' yéetel beelo'ob táan u meyajo'ob",
+      "Marca y ecosistema: TS'ÍIBKO / TS'ÍIBKO KUX": "K'aaba' yéetel kúuchil: TS'ÍIBKO / TS'ÍIBKO KUX",
+      "Operación independiente desde Cansahcab, Yucatán, México.": "Meyaj tu juunal desde Cansahcab, Yucatán, México.",
+      "Sitio principal: pabljs.dev": "Chuun kúuchil: pabljs.dev",
+      "Portafolio, bitácora técnica y proyectos activos.": "Múuch' meyaj, ts'íib k'aaj yéetel meyajo'ob táan u meyajo'ob.",
+      "Juego ARG: S I N ▲ P S [ ] S": "Báaxal ARG: S I N ▲ P S [ ] S",
+      "Todos mis proyectos activos, sistemas y universos creativos.": "Tuláakal in meyajo'ob táan u meyajo'ob, sistemas yéetel kúuchilo'ob beetbil.",
+      "Misterio interactivo y señales cifradas": "Ta'akbil ba'al yéetel ta'akbil chíikulilo'ob",
+      "Producción visual, recorridos, fotografía y edición con identidad propia desde Yucatán.": "Beetik oochel, xíimbalo'ob, oochel yéetel utskíintik yéetel juunal k'aaba' desde Yucatán.",
+      "Narrativa visual y edición atmosférica": "Tsikbal oochel yéetel utskíintik",
+      "INFRAESTRUCTURA": "TSOLA'AN KÚUCHIL",
+      "Ecosistema local de ingeniería de software, seguridad y automatización sin dependencias innecesarias.": "Te'ela' kúuchil beetik software, seguridad yéetel ts'aik tu juunal ma' u k'a'abéettal u maasil.",
+      "LOCAL-FIRST": "TE'ELA'-YÁAX",
+      "Control total, orden y continuidad": "Kanantik tuláakal, tsola'an yéetel ma' u p'áatal",
+      "Hub central de identidad técnica, proyectos, bitácora y contacto profesional.": "Chúumuk múuch' ti' k'aaba' meyaj, meyajo'ob, ts'íib k'aaj yéetel t'aan meyaj.",
+      "Identidad web de Pablo Canché | TS'ÍIBKO": "Web k'aaba' Pablo Canché | TS'ÍIBKO",
+      "Navegación": "Kaxant",
+      "Pablo Francisco Canché Canché · TS'ÍIBKO KUX. Estructuras sólidas, seguridad, automatización, juegos ARG y producción visual desde Cansahcab, Yucatán, México.": "Pablo Francisco Canché Canché · TS'ÍIBKO KUX. Tsola'an ba'alo'ob, seguridad, ts'aik tu juunal, báaxalo'ob ARG yéetel beetik oochel desde Cansahcab, Yucatán, México.",
+      "Cansahcab, Yucatán: © 2026 pabljs.dev · TS'ÍIBKO. Todos los derechos reservados": "Cansahcab, Yucatán: © 2026 pabljs.dev · TS'ÍIBKO. Tuláakal páajtalilo'ob kananta'an",
+      "Bitácora": "Ts'íib k'aaj",
+      "Recursos": "Nu'ukulo'ob",
+      "Proyectos": "Meyajo'ob",
+      "Inicio": "Lik'ul",
+      "Portafolio": "Múuch' meyaj",
+      "Pablo Canché | TS'ÍIBKO · Cansahcab, Yucatán": "Pablo Canché | TS'ÍIBKO · Cansahcab, Yucatán",
+      "¡Hola! bienvenido a mi mundo virtual": "¡Ba'ax ka wa'alik! K'a'ambe'en a talel tin kuxtalil",
+      "Construyo estructuras sólidas, protejo lo que importa, automatizo procesos y doy forma visual a las ideas con carácter propio.": "Kin beetik chichan pak'o'ob, kin kanantik ba'ax k'a'ana'an, kin ts'aik u bin meyaj tu juunal yéetel kin ts'aik u jeelil ba'ax ku tukulik máak.",
+      "Explora mi mundo →": "Kaxant in kuxtal →",
+      "Recursos y notas ↓": "K'a'ana'an ba'alo'ob yéetel ts'íibo'ob ↓",
+      "Identidad base": "K'aaba' yéetel bixil",
+      "Juego ARG": "Báaxal ARG",
+      "Sistemas": "Sistemas",
+      "Orden y control": "Tsolik yéetel kanantik",
+      "Seguridad": "Seguridad",
+      "Resguardo": "K'u'ubul kanantik",
+      "Automatización": "Automatización",
+      "Flujos ágiles": "Séeba'an meyaj",
+      "Producción visual": "Beetik oochel",
+      "Mi stack y entorno": "In nu'ukulil yéetel bix in meyaj",
+      "100% local · TS'ÍIBKO | LÚUM": "100% te'ela' · TS'ÍIBKO | LÚUM",
+      "Sobre mí": "Tin wo'olal",
+      "Quién soy y qué me mueve, en pocas líneas.": "Máaxen yéetel ba'ax ku péeksiken, ichil jump'íit t'aano'ob.",
+      "Construyo sistemas ordenados y soluciones web funcionales desde cero, pensados para aguantar sin parches constantes.": "Kin beetik tsola'an sistemas yéetel web nu'ukulo'ob ku meyaj tubeel desde tu chúumukil, utia'al u p'áatal ma' u k'a'abéettal u yutskinta'al mantats'.",
+      "Aplico criterio de seguridad, control de entornos y protección de datos en cada paso.": "Kin ts'aik u tukulil kanantik ba'al, u kananta'al kúuchil meyaj yéetel u kananta'al ts'íibo'ob ti' tuláakal táan.",
+      "Automatizo tareas y flujos repetitivos para que todo corra con orden, precisión y sin errores innecesarios.": "Kin ts'aik u bin meyaj tu juunal ba'alo'ob ku suut u beeta'al utia'al ka binak tsola'an, jach tu beel yéetel ma' u yantal ba'ax k'aasil.",
+      "Diseño retos, misterios y narrativas interactivas tipo juego ARG con pistas cifradas y estética propia en S I N ▲ P S [ ] S.": "Kin tsolik talamilo'ob, ta'akbil ba'alo'ob yéetel tsikbalo'ob je'el bix báaxal ARG yéetel ta'akbil p'íisilo'ob yéetel u jeelil bix u yila'al ti' S I N ▲ P S [ ] S.",
+      "Produzco y edito piezas visuales y audiovisuales con mirada estética, ritmo y narrativa propia en @TSÍÍBKO_KUX.": "Kin beetik yéetel kin tojkinik oochelo'ob yéetel ba'alo'ob u'uybil-ila'bil yéetel bix u yila'al, péekbal yéetel tsikbal ti' @TSÍÍBKO_KUX.",
+      "Trabajo directo desde Cansahcab, Yucatán, conectando lógica técnica y sensibilidad visual sin adornos vacíos.": "Kin meyaj tu juunal desde Cansahcab, Yucatán, kin nup'ik tukulil meyaj yéetel bix u yila'al oochelo'ob wa'aj ma' x-ma' k'a'ana'an jats'utskíintalo'obi'.",
+      "Más sobre mi carrera y CV ↗": "U maasil in meyaj yéetel CV ↗",
+      "Lógica y ejecución": "Tukulil yéetel beetik",
+      "Código limpio, criterio práctico y control total.": "Ts'íib jats'uts, utsil tukul yéetel kanantik tuláakal.",
+      "Juegos ARG": "Báaxalo'ob ARG",
+      "Lo que he construido": "Ba'ax ts'o'ok in beetik",
+      "Sistemas, juegos ARG, herramientas web y piezas visuales que puedes explorar hoy mismo.": "Sistemas, báaxalo'ob ARG, nu'ukulo'ob web yéetel oochelo'ob je'el u páajtal a kaxantik bejla'e'.",
+      "JUEGO ARG": "BÁAXAL ARG",
+      "Entrar al juego ARG ↗": "Ookel ti' le báaxal ARG ↗",
+      "SISTEMA": "SISTEMA",
+      "Ver detalle →": "Ila'ak u tsolil →",
+      "WEB Y AUTOMATIZACIÓN": "WEB YÉETEL AUTOMATIZACIÓN",
+      "PRODUCCIÓN VISUAL": "BEETIK OOCHOLE'",
+      "Ver canal @TSÍÍBKO_KUX ↗": "Je'ek'abtik le canal @TSÍÍBKO_KUX ↗",
+      "AUDIOVISUAL": "AUDIOVISUAL",
+      "Edición": "Tojkinik",
+      "Fotografía": "Oochel",
+      "Identidad visual": "Bix u chíikbesikuba",
+      "Recursos y accesos": "K'a'ana'an ba'alo'ob yéetel oochelo'ob",
+      "Bitácora técnica": "Ts'íib k'aaba' meyaj",
+      "CV · Pablo Francisco Canché Canché": "CV · Pablo Francisco Canché Canché",
+      "Áreas de especialidad": "Ba'ax ma'alob u yila'al u beeta'al",
+      "Contacto directo": "T'aan séeba'an",
+      "Portafolio completo": "Tuláakal múuch' meyaj",
+      "Abrir canal de YouTube ↗": "Je'ek'abtik YouTube ↗",
+      "SITIO OFICIAL": "K'AABA'NA'AN KÚUCHIL",
+      "✦ Pregunta sobre pabljs.dev": "✦ K'áat ti' pabljs.dev",
+      "DETALLE": "TSOLIL",
+      "Cerrar ✕": "K'al ✕",
+      "Título": "K'aaba'",
+      "Contenido": "Ba'ax yaan ichil",
+      "Entendido": "Na'ata'an",
+      "Conectemos →": "K t'anikba →",
+      "Explora": "Kaxant",
+      "Canales": "Beelo'ob",
+      "Cansahcab, Yucatán: © 2026 pabljs.dev · TS'ÍIBKO. Todos los derechos reservados.": "Cansahcab, Yucatán: © 2026 pabljs.dev · TS'ÍIBKO. Tuláakal páajtalil kananta'an.",
+      "↑ Volver arriba": "↑ Suut ka'anal",
+      "Fotografía a Color": "Oochel yéetel boonil",
+      "Luz cálida que revela matices, entorno y atmósfera.": "Sáasil chokoj ku ye'esik boonilo'ob yéetel kúuchil.",
+      "VIP · Blanco y Negro": "VIP · Boox yéetel Sak",
+      "Luz fría de alto contraste y piezas master.": "Sáasil síis yéetel nojoch oochelo'ob.",
+      "Acceso VIP": "Ookel VIP",
+      "Selección exclusiva desbloqueada por la lámpara.": "Yéeybil oochelo'ob je'ek'aba'an tumen le sáasil nu'ukulo'."
+    };
 
-      originalTextNodes.forEach((origVal, node) => {
-        if (!node.isConnected) return;
-        const trimmed = origVal.trim();
-        if (lang === "es") {
-          node.nodeValue = origVal;
-        } else if (lang === "en" && Object.prototype.hasOwnProperty.call(fullEsToEn, trimmed)) {
-          node.nodeValue = origVal.replace(trimmed, fullEsToEn[trimmed]);
-        }
+    const enToEs = Object.entries(fullEsToEn).reduce((acc, [esVal, enVal]) => {
+      if (enVal && !Object.prototype.hasOwnProperty.call(acc, enVal)) {
+        acc[enVal] = esVal;
+      }
+      return acc;
+    }, {});
+
+    function resolveEsKey(trimmed) {
+      if (Object.prototype.hasOwnProperty.call(fullEsToYua, trimmed)) {
+        return trimmed;
+      }
+      if (Object.prototype.hasOwnProperty.call(enToEs, trimmed)) {
+        return enToEs[trimmed];
+      }
+      return null;
+    }
+
+
+    const isolatedSections = ["sobre-mi", "proyectos", "recursos", "bitacora"];
+    function activateIsolatedSection(sectionId) {
+      const heroEl = document.querySelector("#view-inicio .hero");
+      const allSecs = isolatedSections
+        .map((id) => document.getElementById(id))
+        .filter(Boolean);
+
+      if (heroEl) heroEl.style.display = "none";
+      allSecs.forEach((sec) => {
+        sec.style.display = sec.id === sectionId ? "" : "none";
+      });
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+
+    function restoreHomeTimeline() {
+      const heroEl = document.querySelector("#view-inicio .hero");
+      const allSecs = isolatedSections
+        .map((id) => document.getElementById(id))
+        .filter(Boolean);
+
+      if (heroEl) heroEl.style.display = "";
+      allSecs.forEach((sec) => {
+        sec.style.display = "";
       });
     }
 
-    const langEs = document.getElementById("langEs");
-    const langEn = document.getElementById("langEn");
+    const baseSwitchView = window.switchView;
+    window.switchView = function(viewName) {
+      if (isolatedSections.includes(viewName)) {
+        if (typeof baseSwitchView === "function") baseSwitchView("inicio");
+        activateIsolatedSection(viewName);
+        document.querySelectorAll(".nav-btn").forEach((b) => {
+          b.classList.toggle("active", b.dataset.view === viewName);
+        });
+        return;
+      }
+      restoreHomeTimeline();
+      if (typeof baseSwitchView === "function") baseSwitchView(viewName);
+      if (window.__currentLang && typeof applyFullLang === "function") applyFullLang(window.__currentLang);
+    };
 
-    langEs.addEventListener("click", () => {
-      langEs.classList.add("active");
-      langEn.classList.remove("active");
-      applyFullLang("es");
+    function applyFullLang(lang) {
+      if (typeof collectTextNodes === "function") collectTextNodes();
+      document.documentElement.lang = lang;
+
+      if (typeof originalTextNodes !== "undefined" && originalTextNodes) {
+        originalTextNodes.forEach((origVal, node) => {
+          if (!node.isConnected) return;
+          const trimmed = origVal.trim();
+          if (!trimmed) return;
+
+          if (lang === "es") {
+            node.nodeValue = origVal;
+          } else if (lang === "en") {
+            const esKey = resolveEsKey(trimmed) || trimmed;
+            if (Object.prototype.hasOwnProperty.call(fullEsToEn, esKey)) {
+              node.nodeValue = origVal.replace(trimmed, fullEsToEn[esKey]);
+            }
+          } else if (lang === "yua" && typeof fullEsToYua !== "undefined") {
+            const esKey = resolveEsKey(trimmed);
+            if (esKey && Object.prototype.hasOwnProperty.call(fullEsToYua, esKey)) {
+              node.nodeValue = origVal.replace(trimmed, fullEsToYua[esKey]);
+            }
+          }
+        });
+      }
+    }
+
+    function setLanguage(code) {
+      window.__currentLang = code;
+      const buttons = [
+        [document.getElementById("langEs"), "es"],
+        [document.getElementById("langEn"), "en"],
+        [document.getElementById("langMaya"), "yua"]
+      ];
+      buttons.forEach(([btn, langCode]) => {
+        if (!btn) return;
+        const active = langCode === code;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-pressed", String(active));
+      });
+      if (typeof applyLang === "function") applyLang(code);
+      applyFullLang(code);
+    }
+
+    ["langEs", "langEn", "langMaya"].forEach((id) => {
+      const btn = document.getElementById(id);
+      const code = id === "langEs" ? "es" : (id === "langEn" ? "en" : "yua");
+      if (btn) btn.addEventListener("click", () => setLanguage(code));
     });
-
-    langEn.addEventListener("click", () => {
-      langEn.classList.add("active");
-      langEs.classList.remove("active");
-      applyFullLang("en");
-    });
-
-    const tabCore = document.getElementById("tabCore");
+const tabCore = document.getElementById("tabCore");
     const tabArg = document.getElementById("tabArg");
     const tabVisual = document.getElementById("tabVisual");
     const codeBlock = document.getElementById("codeBlock");
@@ -2026,17 +2380,30 @@
         askAnswer.textContent = btn.dataset.answer;
       });
     });
-  </script>
 
-  <script type="module">
-    import { initLampGuide } from "./js/lamp-controller.js";
-    const lampGuide = initLampGuide({ modelUrl: "./models/luxo-lamp.glb" });
-    const prevSwitchView = window.switchView;
-    window.switchView = function(viewName) {
-      if (typeof prevSwitchView === "function") prevSwitchView(viewName);
-      if (lampGuide && typeof lampGuide.setMode === "function") lampGuide.setMode(viewName);
-    };
-  </script>
+
+
+</script>
+
+<script id="exclusive-view-nav">
+document.addEventListener("click", (e) => {
+  const target = e.target.closest("[data-view]");
+  if (!target) return;
+  const view = target.getAttribute("data-view");
+  if (!view) return;
+  const panels = document.querySelectorAll(".view-panel");
+  if (!panels.length) return;
+  panels.forEach((panel) => {
+    panel.classList.toggle("active", panel.id === "view-" + view);
+  });
+  document.querySelectorAll("[data-view]").forEach((btn) => {
+    if (btn.classList.contains("nav-btn")) {
+      btn.classList.toggle("active", btn.getAttribute("data-view") === view);
+    }
+  });
+  window.scrollTo({ top: 0, behavior: "instant" });
+});
+</script>
 
 </body>
 </html>

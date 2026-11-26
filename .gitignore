@@ -1,2 +1,4 @@
 *.bak*
 *.respaldo
+assets/gallery/
+process_gallery.py

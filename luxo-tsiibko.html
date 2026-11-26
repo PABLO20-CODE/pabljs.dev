@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luxo Jr. — Recreación Interactiva TSÍIBKO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..700;1,400..600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: dark;
+  --background: #0a101d;
+  --surface-container-low: #0e1626;
+  --surface-container: #111b2e;
+  --surface-container-high: #17243c;
+  --on-surface: #f2ece1;
+  --on-surface-variant: #9ba8bf;
+  --outline: #384d73;
+  --outline-variant: #21304d;
+  --primary: #dfaa5b;
+  --on-primary: #0a101d;
+  --primary-container: #2b261c;
+  --on-primary-container: #f5dcb0;
+  --secondary: #687a99;
+  --tertiary: #7cc4e8;
+  --stage-day-top: #cfd7e3;
+  --stage-day-horizon: #edf0f5;
+  --stage-day-floor: #d9dfe8;
+  --stage-day-floor-far: #c6cedb;
+  --stage-night-top: #070c17;
+  --stage-night-horizon: #121c30;
+  --stage-night-floor: #152138;
+  --stage-night-floor-far: #0c1424;
+  --lamp-metal-light: #eef1f6;
+  --lamp-metal-mid: #9ea7b6;
+  --lamp-metal-dark: #495160;
+  --lamp-rim-inner: #272d38;
+  --bulb-core: #fff9e2;
+  --bulb-glow: #ffd166;
+  --bulb-halo: #dfaa5b;
+  --letter-face-day: #f7f4ec;
+  --letter-side-day: #8f96a4;
+  --letter-stroke-day: #323946;
+  --letter-face-night: #f2ece1;
+  --letter-side-night: #6e7b94;
+  --letter-stroke-night: #1d2940;
+  --cord-color: #252c38;
+  --font-headline: 'EB Garamond', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-label: 'JetBrains Mono', monospace;
+  --rounded: 0.25rem;
+  --rounded-lg: 0.375rem;
+  --rounded-full: 9999px;
+  --hairline: 1px solid var(--outline-variant);
+  --hairline-strong: 1px solid var(--outline);
+  --panel-highlight: inset 0 1px 0 rgba(242, 236, 225, 0.05);
+  --brass-glow: radial-gradient(circle at 88% 12%, rgba(223, 170, 91, 0.08), transparent 45%);
+  --heading-tracking: -0.015em;
+  --label-tracking: 0.06em;
+  --sky-tint: color-mix(in srgb, var(--tertiary) 12%, transparent);
+  --brass-tint: color-mix(in srgb, var(--primary) 14%, transparent);
+  --focus: var(--primary);
+  --display-size: clamp(1.95rem, 1.4rem + 1.8vw, 2.75rem);
+  --headline-size: clamp(1.3rem, 1.1rem + 0.6vw, 1.65rem);
+  --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+  --label-size: 0.75rem;
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-micro: 120ms;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body {
+  overflow-x: clip;
+  margin: 0;
+  padding: 0;
+  background-color: var(--background);
+  color: var(--on-surface);
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+header { position: static !important; }
+button, input, select { font-family: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.page-grid {
+  display: grid;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.page-grid * { min-width: 0; }
+
+.hero-header {
+  background-color: var(--background);
+  background-image: var(--brass-glow);
+  border-bottom: var(--hairline);
+  padding-bottom: var(--space-lg);
+}
+
+.title {
+  font-family: var(--font-headline);
+  font-weight: 500;
+  font-size: var(--display-size);
+  letter-spacing: var(--heading-tracking);
+  line-height: 1.08;
+  color: var(--on-surface);
+  margin: 0;
+}
+.title em { font-style: italic; color: var(--primary); }
+
+.deck-brass {
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-top: var(--space-xs);
+}
+
+.hero-lede {
+  color: var(--on-surface-variant);
+  max-width: 68ch;
+  margin: var(--space-sm) 0 0;
+}
+
+.panel {
+  background: var(--surface-container);
+  border: var(--hairline);
+  box-shadow: var(--panel-highlight);
+  border-radius: var(--rounded-lg);
+  padding: var(--space-lg);
+}
+
+.stage-panel { display: grid; gap: var(--space-md); padding: var(--space-md); }
+.stage-topbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-sm); }
+.stage-meta-group { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm); }
+
+.badge {
+  background: var(--sky-tint);
+  color: var(--tertiary);
+  border: 1px solid color-mix(in srgb, var(--tertiary) 35%, transparent);
+  border-radius: var(--rounded);
+  padding: var(--space-xs) var(--space-sm);
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+}
+.badge-brass {
+  background: var(--brass-tint);
+  color: var(--primary);
+  border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+.observation-well {
+  position: relative;
+  background: var(--background);
+  border: var(--hairline);
+  border-radius: var(--rounded);
+  overflow: hidden;
+  min-height: 360px;
+}
+
+#pixar-stage {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 1;
+  min-height: 340px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.stage-hint-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--surface-container-low);
+  border-top: var(--hairline);
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  color: var(--on-surface-variant);
+}
+
+.transport-shell {
+  background: var(--surface-container-low);
+  border: var(--hairline);
+  border-radius: var(--rounded);
+  padding: var(--space-md);
+  display: grid;
+  gap: var(--space-md);
+}
+.transport-row { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-sm); }
+.btn-group { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  min-height: 44px;
+  padding: 0 var(--space-md);
+  border-radius: var(--rounded);
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+}
+.btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+.btn-primary { background: var(--primary); color: var(--on-primary); border: 1px solid var(--primary); }
+.btn-primary:hover { background: var(--on-primary-container); border-color: var(--on-primary-container); }
+.btn-secondary { background: transparent; color: var(--on-surface); border: var(--hairline-strong); }
+.btn-secondary:hover { background: var(--surface-container-high); }
+.btn-secondary[aria-pressed="true"] { background: var(--brass-tint); color: var(--primary); border-color: var(--primary); }
+
+.time-readout {
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  font-variant-numeric: tabular-nums;
+  color: var(--on-surface);
+  background: var(--background);
+  border: var(--hairline);
+  border-radius: var(--rounded);
+  padding: var(--space-sm) var(--space-md);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+.time-readout .frames { color: var(--tertiary); }
+
+.scrubber-field { display: grid; gap: var(--space-xs); }
+.field-label {
+  display: block;
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+}
+.scrubber-input { width: 100%; min-height: 44px; accent-color: var(--primary); cursor: pointer; margin: 0; }
+
+.beats-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-sm); }
+.beat-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  min-height: 44px;
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--background);
+  border: var(--hairline);
+  border-radius: var(--rounded);
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+}
+.beat-btn:hover { background: var(--surface-container-high); color: var(--on-surface); }
+.beat-btn.active { background: var(--brass-tint); border-color: var(--primary); color: var(--on-surface); }
+.beat-btn .beat-time { font-family: var(--font-label); font-size: var(--label-size); color: var(--tertiary); font-variant-numeric: tabular-nums; }
+.beat-btn.active .beat-time { color: var(--primary); }
+.beat-btn .beat-name { font-family: var(--font-body); font-size: 0.8125rem; font-weight: 500; }
+
+.workspace-container { container-type: inline-size; }
+.workspace-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: var(--space-lg); }
+
+.section-heading {
+  font-family: var(--font-headline);
+  font-weight: 500;
+  font-size: var(--headline-size);
+  letter-spacing: var(--heading-tracking);
+  line-height: 1.12;
+  color: var(--on-surface);
+  margin: 0;
+}
+.section-deck {
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--primary);
+  margin: var(--space-xs) 0 var(--space-md);
+}
+
+.controls-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-md); }
+.control-group { display: grid; gap: var(--space-xs); align-content: start; }
+.control-group.full-span { grid-column: 1 / -1; }
+.segmented { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+
+.seg-btn {
+  flex: 1 1 auto;
+  min-height: 44px;
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--background);
+  border: var(--hairline-strong);
+  border-radius: var(--rounded);
+  color: var(--on-surface-variant);
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  cursor: pointer;
+  transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+}
+.seg-btn:hover { background: var(--surface-container-high); color: var(--on-surface); }
+.seg-btn[aria-pressed="true"] { background: var(--primary); color: var(--on-primary); border-color: var(--primary); font-weight: 600; }
+
+.toggle-list { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+.check-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-height: 44px;
+  padding: var(--space-xs) var(--space-md);
+  background: var(--background);
+  border: var(--hairline-strong);
+  border-radius: var(--rounded);
+  color: var(--on-surface);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+.check-pill input { width: 18px; height: 18px; accent-color: var(--primary); margin: 0; cursor: pointer; }
+
+.telemetry-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); }
+.metric-well {
+  background: var(--background);
+  border: var(--hairline);
+  border-radius: var(--rounded);
+  padding: var(--space-md);
+  display: grid;
+  gap: var(--space-xs);
+}
+.metric-val { font-family: var(--font-label); font-size: 1.15rem; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--on-surface); }
+.metric-note { font-family: var(--font-label); font-size: var(--label-size); color: var(--tertiary); }
+.squash-meter-track { height: 6px; background: var(--surface-container-high); border-radius: var(--rounded-full); overflow: hidden; margin-top: var(--space-xs); }
+.squash-meter-fill { height: 100%; width: 100%; background: var(--primary); transform-origin: left center; transition: transform var(--dur-micro) var(--ease-out); }
+
+.story-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr); gap: var(--space-lg); }
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+  text-align: left;
+  padding: var(--space-sm) var(--space-sm) var(--space-sm) 0;
+  border-bottom: var(--hairline-strong);
+  font-weight: 500;
+}
+.data-table td { padding: var(--space-sm) var(--space-sm) var(--space-sm) 0; border-bottom: var(--hairline); vertical-align: top; font-size: 0.9375rem; }
+.data-table td.mono-col { font-family: var(--font-label); font-size: var(--label-size); color: var(--tertiary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.data-table tr.is-current-row td { background: var(--brass-tint); }
+
+.context-prose p { margin: 0 0 var(--space-md); color: var(--on-surface-variant); max-width: 65ch; }
+.context-prose p strong { color: var(--on-surface); font-weight: 600; }
+.source-note { border-top: var(--hairline); padding-top: var(--space-md); font-family: var(--font-label); font-size: var(--label-size); color: var(--on-surface-variant); }
+
+@container (max-width: 780px) { .workspace-grid { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .beats-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } .story-grid { grid-template-columns: 1fr; } }
+@media (max-width: 640px) {
+  .page-grid { grid-template-columns: 1fr; padding: var(--space-md); }
+  .controls-grid, .telemetry-grid { grid-template-columns: 1fr; }
+  #pixar-stage { min-height: 240px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+<main class="page-grid">
+
+  <header class="hero-header">
+    <h1 class="title">Recreación interactiva de Luxo Jr. — <em>TSÍIBKO</em></h1>
+    <div class="deck-brass">Escena animada 2.5D · 12.00 segundos · 360 cuadros · Cinemática inversa (IK)</div>
+    <p class="hero-lede">
+      La lámpara clásica avanza en saltos elásticos sobre el escenario, se detiene encima de la letra <strong>Í</strong> (o la <strong>I</strong> central), la aplasta por completo en tres impactos progresivos y gira finalmente su pantalla hacia el espectador.
+    </p>
+  </header>
+
+  <section class="panel stage-panel" aria-label="Escenario interactivo de animación">
+    <div class="stage-topbar">
+      <div class="stage-meta-group">
+        <span class="badge badge-brass" id="beat-badge">Acto 1 · Entrada a saltos</span>
+        <span class="badge" id="target-badge">Objetivo: Letra Í</span>
+      </div>
+      <div class="stage-meta-group">
+        <button type="button" class="btn btn-secondary" id="sound-btn" aria-pressed="true" onclick="toggleSound()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+          </svg>
+          <span id="sound-label">Sonido: Sí</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="observation-well">
+      <canvas id="pixar-stage" width="1120" height="560" aria-label="Animación de la lámpara de Pixar saltando sobre las letras TSÍIBKO"></canvas>
+      <div class="stage-hint-bar">
+        <span>Haz clic en el escenario para reproducir o pausar · Haz clic sobre cualquier letra de <strong>TSÍIBKO</strong> para aplastarla</span>
+        <span id="hover-letter-hint">Listo para rodar</span>
+      </div>
+    </div>
+
+    <div class="transport-shell">
+      <div class="transport-row">
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary" id="play-btn" onclick="togglePlay()">
+            <svg id="play-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <polygon points="6 4 20 12 6 20 6 4"></polygon>
+            </svg>
+            <span id="play-label">Reproducir</span>
+          </button>
+          <button type="button" class="btn btn-secondary" onclick="restartAnimation()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="1 4 1 10 7 10"></polyline>
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+            </svg>
+            <span>Reiniciar</span>
+          </button>
+          <button type="button" class="btn btn-secondary" onclick="stepFrames(-1)"><span>-1 cuadro</span></button>
+          <button type="button" class="btn btn-secondary" onclick="stepFrames(1)"><span>+1 cuadro</span></button>
+        </div>
+
+        <div class="time-readout" aria-live="polite">
+          <span id="time-display">00:00.00 / 00:12.00</span>
+          <span class="frames" id="frame-display">Cuadro 000 / 360</span>
+        </div>
+      </div>
+
+      <div class="scrubber-field">
+        <label class="field-label" for="timeline-scrubber">Línea de tiempo (arrastra para inspeccionar cuadro por cuadro)</label>
+        <input class="scrubber-input" type="range" id="timeline-scrubber" min="0" max="12" step="0.01" value="0" oninput="scrubTimeline(this.value)">
+      </div>
+
+      <div class="beats-strip" role="group" aria-label="Marcadores de actos de la animación">
+        <button type="button" class="beat-btn active" data-beat="0" onclick="jumpToBeat(0)">
+          <span class="beat-time">0.00s</span>
+          <span class="beat-name">1. Entrada a saltos</span>
+        </button>
+        <button type="button" class="beat-btn" data-beat="1" onclick="jumpToBeat(3.4)">
+          <span class="beat-time">3.40s</span>
+          <span class="beat-name">2. Sube a la letra</span>
+        </button>
+        <button type="button" class="beat-btn" data-beat="2" onclick="jumpToBeat(4.8)">
+          <span class="beat-time">4.80s</span>
+          <span class="beat-name">3. Aplastamiento</span>
+        </button>
+        <button type="button" class="beat-btn" data-beat="3" onclick="jumpToBeat(8.2)">
+          <span class="beat-time">8.20s</span>
+          <span class="beat-name">4. Giro hacia cámara</span>
+        </button>
+        <button type="button" class="beat-btn" data-beat="4" onclick="jumpToBeat(10.2)">
+          <span class="beat-time">10.20s</span>
+          <span class="beat-name">5. Foco al espectador</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="workspace-container">
+    <div class="workspace-grid">
+      <section class="panel">
+        <h2 class="section-heading">Controles de dirección</h2>
+        <div class="section-deck">Ajustes de escena y física del personaje</div>
+        <div class="controls-grid">
+          <div class="control-group">
+            <span class="field-label" id="lbl-target">Letra objetivo (Í / I)</span>
+            <div class="segmented" role="group" aria-labelledby="lbl-target">
+              <button type="button" class="seg-btn" id="btn-target-2" aria-pressed="true" onclick="setTargetLetter(2)">Í (con tilde)</button>
+              <button type="button" class="seg-btn" id="btn-target-3" aria-pressed="false" onclick="setTargetLetter(3)">I (central)</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <span class="field-label" id="lbl-speed">Velocidad de reproducción</span>
+            <div class="segmented" role="group" aria-labelledby="lbl-speed">
+              <button type="button" class="seg-btn" data-speed="0.5" aria-pressed="false" onclick="setSpeed(0.5)">0.5× Lenta</button>
+              <button type="button" class="seg-btn" data-speed="1" aria-pressed="true" onclick="setSpeed(1)">1× Normal</button>
+              <button type="button" class="seg-btn" data-speed="1.5" aria-pressed="false" onclick="setSpeed(1.5)">1.5× Rápida</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <span class="field-label" id="lbl-lighting">Iluminación del escenario</span>
+            <div class="segmented" role="group" aria-labelledby="lbl-lighting">
+              <button type="button" class="seg-btn" id="btn-light-day" aria-pressed="true" onclick="setLighting('day')">Estudio clásico</button>
+              <button type="button" class="seg-btn" id="btn-light-night" aria-pressed="false" onclick="setLighting('night')">Cine nocturno</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <span class="field-label" id="lbl-entry">Dirección de entrada</span>
+            <div class="segmented" role="group" aria-labelledby="lbl-entry">
+              <button type="button" class="seg-btn" id="btn-dir-right" aria-pressed="true" onclick="setEntrySide('right')">Desde la derecha</button>
+              <button type="button" class="seg-btn" id="btn-dir-left" aria-pressed="false" onclick="setEntrySide('left')">Desde la izquierda</button>
+            </div>
+          </div>
+
+          <div class="control-group full-span">
+            <span class="field-label">Capas de inspección de animación</span>
+            <div class="toggle-list">
+              <label class="check-pill" for="chk-arcs">
+                <input type="checkbox" id="chk-arcs" onchange="toggleGuide('arcs', this.checked)">
+                <span>Mostrar trayectoria parabólica</span>
+              </label>
+              <label class="check-pill" for="chk-rig">
+                <input type="checkbox" id="chk-rig" onchange="toggleGuide('rig', this.checked)">
+                <span>Mostrar esqueleto IK y pivotes</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2 class="section-heading">Telemetría del rig en vivo</h2>
+        <div class="section-deck">Cinemática y deformación por cuadro</div>
+        <div class="telemetry-grid">
+          <div class="metric-well">
+            <span class="field-label">Altura de la letra objetivo</span>
+            <div class="metric-val" id="tel-squash">100%</div>
+            <div class="squash-meter-track">
+              <div class="squash-meter-fill" id="tel-squash-bar"></div>
+            </div>
+            <span class="metric-note" id="tel-squash-state">Intacta</span>
+          </div>
+
+          <div class="metric-well">
+            <span class="field-label">Giro del foco a cámara</span>
+            <div class="metric-val" id="tel-yaw">0°</div>
+            <span class="metric-note" id="tel-yaw-note">Perfil lateral</span>
+          </div>
+
+          <div class="metric-well">
+            <span class="field-label">Posición de la base (X, Y)</span>
+            <div class="metric-val" id="tel-pos">980, 420</div>
+            <span class="metric-note" id="tel-phase">En espera</span>
+          </div>
+
+          <div class="metric-well">
+            <span class="field-label">Compresión de brazos IK</span>
+            <div class="metric-val" id="tel-ik">92° / 118°</div>
+            <span class="metric-note">Hombro / Codo</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <section class="panel">
+    <div class="story-grid">
+      <div>
+        <h2 class="section-heading">Coreografía en cinco actos</h2>
+        <div class="section-deck">Desglose de tiempos y principios de animación</div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Tiempo</th>
+              <th>Acto</th>
+              <th>Acción en escena</th>
+            </tr>
+          </thead>
+          <tbody id="beats-table-body">
+            <tr data-row-beat="0" class="is-current-row">
+              <td class="mono-col">0.00–3.40s</td>
+              <td>Entrada</td>
+              <td>Cuatro saltos parabólicos desde fuera de cuadro con anticipación, estiramiento en vuelo y amortiguación en los resortes.</td>
+            </tr>
+            <tr data-row-beat="1">
+              <td class="mono-col">3.40–4.80s</td>
+              <td>Inspección</td>
+              <td>Frena junto a la letra objetivo, inclina la pantalla para examinarla y salta directamente sobre su parte superior.</td>
+            </tr>
+            <tr data-row-beat="2">
+              <td class="mono-col">4.80–8.20s</td>
+              <td>Aplastamiento</td>
+              <td>Tres saltos rítmicos la comprimen a 62%, 28% y finalmente 4% (aplastada al ras del piso); si es la «Í», la tilde sale despedida.</td>
+            </tr>
+            <tr data-row-beat="3">
+              <td class="mono-col">8.20–10.20s</td>
+              <td>Giro</td>
+              <td>Mira hacia abajo tras el último impacto, realiza una breve pausa y gira su cuello 90° hasta quedar de frente.</td>
+            </tr>
+            <tr data-row-beat="4">
+              <td class="mono-col">10.20–12.00s</td>
+              <td>Foco final</td>
+              <td>El escenario atenúa la luz ambiental mientras el foco incandescente apunta directamente hacia el espectador.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="context-prose">
+        <h2 class="section-heading">Origen e inspiración 3D</h2>
+        <div class="section-deck">Del corto de 1986 a TSÍIBKO</div>
+        <p>
+          La lámpara articulada nació en el cortometraje animado por computadora <strong>Luxo Jr.</strong> (1986), dirigido por John Lasseter e inspirado en una lámpara de escritorio marca Luxo que tenía sobre su mesa. Fue la primera película CGI nominada a un Premio de la Academia y dio origen al sello visual del estudio.
+        </p>
+        <p>
+          Esta recreación toma como referencia la estructura clásica de 12 segundos recreada por animadores en Autodesk Maya (como el homenaje compartido en la comunidad <em>r/Maya</em> por <em>u/salsalvador04</em>) y la traslada a un rig procedural de cinemática inversa adaptado para <strong>TSÍIBKO</strong>.
+        </p>
+        <div class="source-note">
+          Fuentes: comunidad r/Maya (u/salsalvador04, recreación de 12 s) y registros históricos sobre el cortometraje Luxo Jr. (1986).
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  const DURATION = 12.0;
+  const FPS = 30;
+  const TOTAL_FRAMES = 360;
+  const LETTERS = ['T', 'S', 'Í', 'I', 'B', 'K', 'O'];
+  const STAGE_W = 1120;
+  const STAGE_H = 560;
+  const FLOOR_Y = 420;
+  const LETTER_SPACING = 104;
+  const LETTER_BASE_H = 116;
+  const FIRST_LETTER_X = 560 - ((LETTERS.length - 1) * LETTER_SPACING) / 2;
+
+  const state = {
+    time: 0,
+    playing: false,
+    speed: 1,
+    targetIndex: 2,
+    entrySide: 'right',
+    lighting: 'day',
+    soundEnabled: true,
+    showArcs: false,
+    showRig: false,
+    hoverLetter: -1,
+    lastTimestamp: 0,
+    lastSoundStep: -1
+  };
+
+  let palette = null;
+  let audioCtx = null;
+  let animFrameId = 0;
+
+  function readToken(name, fallback) {
+    const val = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    return val || fallback;
+  }
+
+  function loadPalette() {
+    palette = {
+      dayTop: readToken('--stage-day-top', '#cfd7e3'),
+      dayHorizon: readToken('--stage-day-horizon', '#edf0f5'),
+      dayFloor: readToken('--stage-day-floor', '#d9dfe8'),
+      dayFloorFar: readToken('--stage-day-floor-far', '#c6cedb'),
+      nightTop: readToken('--stage-night-top', '#070c17'),
+      nightHorizon: readToken('--stage-night-horizon', '#121c30'),
+      nightFloor: readToken('--stage-night-floor', '#152138'),
+      nightFloorFar: readToken('--stage-night-floor-far', '#0c1424'),
+      metalLight: readToken('--lamp-metal-light', '#eef1f6'),
+      metalMid: readToken('--lamp-metal-mid', '#9ea7b6'),
+      metalDark: readToken('--lamp-metal-dark', '#495160'),
+      rimInner: readToken('--lamp-rim-inner', '#272d38'),
+      bulbCore: readToken('--bulb-core', '#fff9e2'),
+      bulbGlow: readToken('--bulb-glow', '#ffd166'),
+      bulbHalo: readToken('--bulb-halo', '#dfaa5b'),
+      letterFaceDay: readToken('--letter-face-day', '#f7f4ec'),
+      letterSideDay: readToken('--letter-side-day', '#8f96a4'),
+      letterStrokeDay: readToken('--letter-stroke-day', '#323946'),
+      letterFaceNight: readToken('--letter-face-night', '#f2ece1'),
+      letterSideNight: readToken('--letter-side-night', '#6e7b94'),
+      letterStrokeNight: readToken('--letter-stroke-night', '#1d2940'),
+      cord: readToken('--cord-color', '#252c38'),
+      primary: readToken('--primary', '#dfaa5b'),
+      tertiary: readToken('--tertiary', '#7cc4e8')
+    };
+  }
+
+  function ensureAudio() {
+    if (!state.soundEnabled) return null;
+    if (!audioCtx) {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (Ctx) audioCtx = new Ctx();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(function () {});
+    }
+    return audioCtx;
+  }
+
+  function playFoley(kind) {
+    if (!state.soundEnabled || !state.playing) return;
+    const ctx = ensureAudio();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+
+    if (kind === 'hop') {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(160, now);
+      osc.frequency.exponentialRampToValueAtTime(340, now + 0.11);
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.15);
+    } else if (kind === 'land') {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(135, now);
+      osc.frequency.exponentialRampToValueAtTime(52, now + 0.11);
+      gain.gain.setValueAtTime(0.14, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.14);
+    } else if (kind === 'crush') {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(190, now);
+      osc.frequency.exponentialRampToValueAtTime(42, now + 0.16);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.19);
+    }
+  }
+
+  function clamp(v, min, max) {
+    return Math.max(min, Math.min(max, v));
+  }
+
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
+
+  function smoothstep(edge0, edge1, x) {
+    const t = clamp((x - edge0) / (edge1 - edge0), 0, 1);
+    return t * t * (3 - 2 * t);
+  }
+
+  function getLetterX(idx) {
+    return FIRST_LETTER_X + idx * LETTER_SPACING;
+  }
+
+  function getTargetX() {
+    return getLetterX(state.targetIndex);
+  }
+
+  function evaluateScene(t) {
+    const dirSign = state.entrySide === 'right' ? -1 : 1;
+    const targetX = getTargetX();
+    const startX = clamp(targetX - dirSign * 440, 90, STAGE_W - 90);
+    const prepX = targetX - dirSign * 78;
+
+    const scales = LETTERS.map(function () { return 1.0; });
+    let baseX = startX;
+    let baseY = FLOOR_Y;
+    let squashX = 1.0;
+    let squashY = 1.0;
+    let yaw = 0; // 0 = perfil lateral, 1 = frente al espectador
+    let headPitch = -0.35;
+    let beatIndex = 0;
+    let beatTitle = 'Acto 1 · Entrada a saltos';
+    let phaseLabel = 'Entrada';
+    let spotStrength = 0.25;
+    let tildeFly = 0;
+
+    if (t < 3.4) {
+      beatIndex = 0;
+      beatTitle = 'Acto 1 · Entrada a saltos';
+      phaseLabel = 'Saltos de entrada';
+      const hops = 4;
+      const span = 3.4 / hops;
+      const hIdx = Math.min(hops - 1, Math.floor(t / span));
+      const u = (t - hIdx * span) / span;
+      const x0 = lerp(startX, prepX, hIdx / hops);
+      const x1 = lerp(startX, prepX, (hIdx + 1) / hops);
+      const jumpH = lerp(66, 38, hIdx / (hops - 1));
+      const arc = 4 * u * (1 - u);
+      baseX = lerp(x0, x1, u);
+      baseY = FLOOR_Y - arc * jumpH;
+      squashY = 1 + arc * 0.12 - (u > 0.85 ? (u - 0.85) * 0.7 : 0);
+      squashX = 1 / Math.sqrt(Math.max(0.65, squashY));
+      headPitch = -0.3 + Math.sin(u * Math.PI) * 0.22;
+      spotStrength = 0.35 + hIdx * 0.1;
+    } else if (t < 4.8) {
+      beatIndex = 1;
+      beatTitle = 'Acto 2 · Sube a la letra';
+      phaseLabel = 'Salto sobre letra';
+      const u = (t - 3.4) / 1.4;
+      const arc = 4 * u * (1 - u);
+      const topOfLetter = FLOOR_Y - LETTER_BASE_H;
+      baseX = lerp(prepX, targetX, smoothstep(0, 0.85, u));
+      baseY = lerp(FLOOR_Y, topOfLetter, smoothstep(0.2, 1.0, u)) - arc * 42;
+      squashY = 1 + arc * 0.1;
+      squashX = 1 / squashY;
+      headPitch = lerp(-0.3, 0.25, u);
+      spotStrength = 0.75;
+    } else if (t < 8.2) {
+      beatIndex = 2;
+      beatTitle = 'Acto 3 · Aplastamiento';
+      phaseLabel = 'Aplastando letra';
+      const crushT = t - 4.8;
+      const impacts = [
+        { start: 0.0, end: 1.1, targetScale: 0.62 },
+        { start: 1.1, end: 2.2, targetScale: 0.28 },
+        { start: 2.2, end: 3.4, targetScale: 0.04 }
+      ];
+      let currentScale = 1.0;
+      baseX = targetX;
+      baseY = FLOOR_Y - LETTER_BASE_H;
+      spotStrength = 0.95;
+
+      for (let i = 0; i < impacts.length; i++) {
+        const imp = impacts[i];
+        const prevScale = i === 0 ? 1.0 : impacts[i - 1].targetScale;
+        if (crushT < imp.start) {
+          currentScale = prevScale;
+          break;
+        }
+        const localU = clamp((crushT - imp.start) / (imp.end - imp.start), 0, 1);
+        const liftArc = Math.sin(localU * Math.PI);
+        const pressU = smoothstep(0.35, 1.0, localU);
+        currentScale = lerp(prevScale, imp.targetScale, pressU);
+        const currentLetterTop = FLOOR_Y - LETTER_BASE_H * currentScale;
+        baseY = currentLetterTop - liftArc * (26 - i * 5);
+        squashY = 1 - pressU * 0.14 + liftArc * 0.08;
+        squashX = 1 / Math.max(0.75, squashY);
+        headPitch = lerp(0.15, 0.58 + i * 0.08, pressU);
+        if (LETTERS[state.targetIndex] === 'Í') {
+          tildeFly = clamp((crushT - 1.5) / 1.9, 0, 1);
+        }
+      }
+      scales[state.targetIndex] = currentScale;
+    } else if (t < 10.2) {
+      beatIndex = 3;
+      beatTitle = 'Acto 4 · Giro hacia cámara';
+      phaseLabel = 'Mirando al frente';
+      const u = (t - 8.2) / 2.0;
+      scales[state.targetIndex] = 0.04;
+      tildeFly = LETTERS[state.targetIndex] === 'Í' ? 1 : 0;
+      baseX = targetX;
+      baseY = FLOOR_Y - LETTER_BASE_H * 0.04;
+      yaw = smoothstep(0.25, 0.95, u);
+      headPitch = lerp(0.65, 0.12, smoothstep(0, 0.6, u));
+      spotStrength = lerp(0.95, 1.15, u);
+    } else {
+      beatIndex = 4;
+      beatTitle = 'Acto 5 · Foco al espectador';
+      phaseLabel = 'Pose frontal final';
+      scales[state.targetIndex] = 0.04;
+      tildeFly = LETTERS[state.targetIndex] === 'Í' ? 1 : 0;
+      baseX = targetX;
+      baseY = FLOOR_Y - LETTER_BASE_H * 0.04;
+      yaw = 1;
+      headPitch = 0.05;
+      spotStrength = 1.25;
+    }
+
+    // Solve 2-bone IK from base to head joint
+    const baseRadiusX = lerp(34, 42, yaw);
+    const baseRadiusY = 10;
+    const jointBaseX = baseX;
+    const jointBaseY = baseY - baseRadiusY * 0.5;
+
+    const headOffsetX = lerp(dirSign * 26, 0, yaw);
+    const headOffsetY = -104 + Math.sin(t * 2.1) * 1.5;
+    const endX = baseX + headOffsetX;
+    const endY = baseY + headOffsetY;
+
+    const dx = endX - jointBaseX;
+    const dy = endY - jointBaseY;
+    const dist = clamp(Math.hypot(dx, dy), 24, 152);
+    const seg1 = 80;
+    const seg2 = 76;
+
+    const cosElbow = clamp((dist * dist - seg1 * seg1 - seg2 * seg2) / (2 * seg1 * seg2), -1, 1);
+    const elbowAngleRel = Math.acos(cosElbow);
+    const baseAngle = Math.atan2(dy, dx);
+    const cosShoulder = clamp((seg1 * seg1 + dist * dist - seg2 * seg2) / (2 * seg1 * dist), -1, 1);
+    const shoulderOffset = Math.acos(cosShoulder) * (dirSign >= 0 ? -1 : 1);
+
+    const shoulderAngle = baseAngle + shoulderOffset;
+    const elbowX = jointBaseX + Math.cos(shoulderAngle) * seg1;
+    const elbowY = jointBaseY + Math.sin(shoulderAngle) * seg1;
+
+    const shoulderDeg = Math.round(Math.abs(Math.sin(shoulderAngle)) * 125 + 25);
+    const elbowDeg = Math.round((Math.PI - elbowAngleRel) * (180 / Math.PI));
+
+    return {
+      t,
+      beatIndex,
+      beatTitle,
+      phaseLabel,
+      scales,
+      tildeFly,
+      baseX,
+      baseY,
+      baseRadiusX,
+      baseRadiusY,
+      jointBaseX,
+      jointBaseY,
+      elbowX,
+      elbowY,
+      endX,
+      endY,
+      squashX,
+      squashY,
+      yaw,
+      headPitch,
+      spotStrength,
+      shoulderDeg,
+      elbowDeg,
+      startX,
+      prepX,
+      targetX
+    };
+  }
+
+  function drawStage(ctx, pose) {
+    const isNight = state.lighting === 'night';
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, FLOOR_Y);
+    bgGrad.addColorStop(0, isNight ? palette.nightTop : palette.dayTop);
+    bgGrad.addColorStop(1, isNight ? palette.nightHorizon : palette.dayHorizon);
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, STAGE_W, FLOOR_Y);
+
+    const floorGrad = ctx.createLinearGradient(0, FLOOR_Y, 0, STAGE_H);
+    floorGrad.addColorStop(0, isNight ? palette.nightFloor : palette.dayFloor);
+    floorGrad.addColorStop(1, isNight ? palette.nightFloorFar : palette.dayFloorFar);
+    ctx.fillStyle = floorGrad;
+    ctx.fillRect(0, FLOOR_Y, STAGE_W, STAGE_H - FLOOR_Y);
+
+    ctx.strokeStyle = isNight ? 'rgba(155, 168, 191, 0.16)' : 'rgba(50, 57, 70, 0.14)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, FLOOR_Y);
+    ctx.lineTo(STAGE_W, FLOOR_Y);
+    ctx.stroke();
+
+    // Spotlight cone from lamp shade
+    if (pose.spotStrength > 0.05) {
+      ctx.save();
+      const coneAlpha = clamp(pose.spotStrength * (isNight ? 0.24 : 0.14), 0, 0.35);
+      const coneGrad = ctx.createLinearGradient(pose.endX, pose.endY, pose.endX + (1 - pose.yaw) * 70, FLOOR_Y + 24);
+      coneGrad.addColorStop(0, `rgba(255, 226, 150, ${coneAlpha * 1.4})`);
+      coneGrad.addColorStop(1, 'rgba(255, 226, 150, 0)');
+      ctx.fillStyle = coneGrad;
+      ctx.beginPath();
+      ctx.moveTo(pose.endX - 16, pose.endY + 6);
+      ctx.lineTo(pose.endX + 16, pose.endY + 6);
+      ctx.lineTo(pose.endX + 125, FLOOR_Y + 28);
+      ctx.lineTo(pose.endX - 125, FLOOR_Y + 28);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Optional parabolic trajectory guide
+    if (state.showArcs) {
+      ctx.save();
+      ctx.strokeStyle = palette.tertiary;
+      ctx.setLineDash([5, 5]);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      for (let step = 0; step <= 60; step++) {
+        const sampleT = (step / 60) * 4.8;
+        const p = evaluateScene(sampleT);
+        if (step === 0) ctx.moveTo(p.baseX, p.baseY);
+        else ctx.lineTo(p.baseX, p.baseY);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Draw letters TSÍIBO
+    const faceCol = isNight ? palette.letterFaceNight : palette.letterFaceDay;
+    const sideCol = isNight ? palette.letterSideNight : palette.letterSideDay;
+    const strokeCol = isNight ? palette.letterStrokeNight : palette.letterStrokeDay;
+
+    for (let i = 0; i < LETTERS.length; i++) {
+      const lx = getLetterX(i);
+      const scaleY = pose.scales[i];
+      const h = Math.max(4, LETTER_BASE_H * scaleY);
+      const isHovered = state.hoverLetter === i;
+
+      ctx.save();
+      ctx.translate(lx, FLOOR_Y);
+
+      // Ground contact shadow under letter
+      ctx.fillStyle = isNight ? 'rgba(0,0,0,0.45)' : 'rgba(37,44,56,0.16)';
+      ctx.beginPath();
+      ctx.ellipse(6, 5, 34, 7, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 3D extrusion depth
+      ctx.scale(1, Math.max(0.05, scaleY));
+      ctx.font = '700 108px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'alphabetic';
+
+      ctx.fillStyle = sideCol;
+      ctx.fillText(LETTERS[i], 7, -4);
+
+      ctx.fillStyle = isHovered ? palette.primary : faceCol;
+      ctx.strokeStyle = strokeCol;
+      ctx.lineWidth = 2.5;
+      ctx.fillText(LETTERS[i], 0, -10);
+      ctx.strokeText(LETTERS[i], 0, -10);
+
+      // Flying tilde for 'Í'
+      if (LETTERS[i] === 'Í' && pose.tildeFly > 0.01) {
+        ctx.restore();
+        ctx.save();
+        const tx = lx + pose.tildeFly * 95;
+        const ty = FLOOR_Y - 126 - Math.sin(pose.tildeFly * Math.PI) * 75 + pose.tildeFly * 118;
+        ctx.translate(tx, ty);
+        ctx.rotate(pose.tildeFly * 2.4);
+        ctx.fillStyle = faceCol;
+        ctx.strokeStyle = strokeCol;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(-10, 4);
+        ctx.lineTo(8, -10);
+        ctx.lineTo(13, -5);
+        ctx.lineTo(-5, 9);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // Draw Luxo Jr. Lamp
+    ctx.save();
+    // Base shadow
+    ctx.fillStyle = isNight ? 'rgba(0,0,0,0.55)' : 'rgba(37,44,56,0.22)';
+    ctx.beginPath();
+    ctx.ellipse(pose.baseX, FLOOR_Y + 4, pose.baseRadiusX * 1.15, 9, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Base puck
+    const baseGrad = ctx.createLinearGradient(pose.baseX - pose.baseRadiusX, pose.baseY - 12, pose.baseX + pose.baseRadiusX, pose.baseY + 4);
+    baseGrad.addColorStop(0, palette.metalLight);
+    baseGrad.addColorStop(0.55, palette.metalMid);
+    baseGrad.addColorStop(1, palette.metalDark);
+    ctx.fillStyle = baseGrad;
+    ctx.strokeStyle = palette.rimInner;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(pose.baseX, pose.baseY - 3, pose.baseRadiusX, pose.baseRadiusY, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Lower arm strut
+    ctx.strokeStyle = palette.metalLight;
+    ctx.lineWidth = 8;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(pose.jointBaseX, pose.jointBaseY);
+    ctx.lineTo(pose.elbowX, pose.elbowY);
+    ctx.stroke();
+
+    ctx.strokeStyle = palette.metalDark;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(pose.jointBaseX, pose.jointBaseY);
+    ctx.lineTo(pose.elbowX, pose.elbowY);
+    ctx.stroke();
+
+    // Upper arm strut
+    ctx.strokeStyle = palette.metalLight;
+    ctx.lineWidth = 7;
+    ctx.beginPath();
+    ctx.moveTo(pose.elbowX, pose.elbowY);
+    ctx.lineTo(pose.endX, pose.endY);
+    ctx.stroke();
+
+    // Spring joint accents
+    ctx.fillStyle = palette.metalMid;
+    ctx.strokeStyle = palette.rimInner;
+    ctx.lineWidth = 1.5;
+    [
+      [pose.jointBaseX, pose.jointBaseY, 6.5],
+      [pose.elbowX, pose.elbowY, 6]
+    ].forEach(function (pt) {
+      ctx.beginPath();
+      ctx.arc(pt[0], pt[1], pt[2], 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    });
+
+    // Lamp shade (rotates toward camera as yaw approaches 1)
+    ctx.save();
+    ctx.translate(pose.endX, pose.endY);
+    const shadeAngle = lerp(pose.headPitch + 0.65, Math.PI * 0.5, pose.yaw);
+    ctx.rotate(shadeAngle);
+    const wScale = lerp(1, 1.38, pose.yaw);
+    ctx.scale(wScale, 1);
+
+    const shadeGrad = ctx.createLinearGradient(-26, -24, 26, 12);
+    shadeGrad.addColorStop(0, palette.metalLight);
+    shadeGrad.addColorStop(0.6, palette.metalMid);
+    shadeGrad.addColorStop(1, palette.metalDark);
+    ctx.fillStyle = shadeGrad;
+    ctx.strokeStyle = palette.rimInner;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-12, -22);
+    ctx.lineTo(12, -22);
+    ctx.lineTo(28, 12);
+    ctx.lineTo(-28, 12);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Glowing bulb inside shade
+    const bulbGrad = ctx.createRadialGradient(0, 12, 2, 0, 12, 20);
+    bulbGrad.addColorStop(0, palette.bulbCore);
+    bulbGrad.addColorStop(0.5, palette.bulbGlow);
+    bulbGrad.addColorStop(1, palette.bulbHalo);
+    ctx.fillStyle = bulbGrad;
+    ctx.beginPath();
+    ctx.ellipse(0, 12, 18, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Optional IK rig overlay
+    if (state.showRig) {
+      ctx.strokeStyle = palette.primary;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 3]);
+      ctx.beginPath();
+      ctx.moveTo(pose.jointBaseX, pose.jointBaseY);
+      ctx.lineTo(pose.elbowX, pose.elbowY);
+      ctx.lineTo(pose.endX, pose.endY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      [
+        [pose.jointBaseX, pose.jointBaseY],
+        [pose.elbowX, pose.elbowY],
+        [pose.endX, pose.endY]
+      ].forEach(function (j) {
+        ctx.fillStyle = palette.primary;
+        ctx.beginPath();
+        ctx.arc(j[0], j[1], 4.5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    ctx.restore();
+  }
+
+  function updateUI(pose) {
+    const frame = Math.min(TOTAL_FRAMES, Math.round((state.time / DURATION) * TOTAL_FRAMES));
+    document.getElementById('time-display').textContent =
+      `00:${state.time.toFixed(2).padStart(5, '0')} / 00:12.00`;
+    document.getElementById('frame-display').textContent =
+      `Cuadro ${String(frame).padStart(3, '0')} / ${TOTAL_FRAMES}`;
+    document.getElementById('timeline-scrubber').value = state.time.toFixed(2);
+
+    document.getElementById('beat-badge').textContent = pose.beatTitle;
+    document.getElementById('target-badge').textContent = `Objetivo: Letra ${LETTERS[state.targetIndex]}`;
+
+    const pct = Math.round(pose.scales[state.targetIndex] * 100);
+    document.getElementById('tel-squash').textContent = `${pct}%`;
+    document.getElementById('tel-squash-bar').style.transform = `scaleX(${clamp(pct / 100, 0.04, 1)})`;
+    document.getElementById('tel-squash-state').textContent =
+      pct > 95 ? 'Intacta' : pct > 45 ? 'Parcialmente aplastada' : pct > 10 ? 'Muy comprimida' : 'Aplastada al ras';
+
+    const yawDeg = Math.round(pose.yaw * 90);
+    document.getElementById('tel-yaw').textContent = `${yawDeg}°`;
+    document.getElementById('tel-yaw-note').textContent =
+      yawDeg < 15 ? 'Perfil lateral' : yawDeg < 75 ? 'Girando hacia cámara' : 'De frente al espectador';
+
+    document.getElementById('tel-pos').textContent =
+      `${Math.round(pose.baseX)}, ${Math.round(pose.baseY)}`;
+    document.getElementById('tel-phase').textContent = pose.phaseLabel;
+    document.getElementById('tel-ik').textContent = `${pose.shoulderDeg}° / ${pose.elbowDeg}°`;
+
+    document.querySelectorAll('.beat-btn').forEach(function (btn) {
+      btn.classList.toggle('active', Number(btn.dataset.beat) === pose.beatIndex);
+    });
+    document.querySelectorAll('#beats-table-body tr').forEach(function (row) {
+      row.classList.toggle('is-current-row', Number(row.dataset.rowBeat) === pose.beatIndex);
+    });
+
+    const playBtn = document.getElementById('play-btn');
+    const playLabel = document.getElementById('play-label');
+    const playIcon = document.getElementById('play-icon');
+    playLabel.textContent = state.playing ? 'Pausar' : 'Reproducir';
+    playBtn.setAttribute('aria-pressed', String(state.playing));
+    playIcon.innerHTML = state.playing
+      ? '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>'
+      : '<polygon points="6 4 20 12 6 20 6 4"></polygon>';
+  }
+
+  function render() {
+    if (!palette) loadPalette();
+    const canvas = document.getElementById('pixar-stage');
+    const ctx = canvas.getContext('2d');
+    const pose = evaluateScene(state.time);
+    drawStage(ctx, pose);
+    updateUI(pose);
+  }
+
+  function checkFoleyEvents(prevT, nextT) {
+    if (!state.playing || !state.soundEnabled) return;
+    const stepMark = Math.floor(nextT * 4);
+    if (stepMark !== state.lastSoundStep && nextT > prevT) {
+      state.lastSoundStep = stepMark;
+      if (nextT >= 4.8 && nextT <= 8.2) {
+        playFoley('crush');
+      } else if (nextT < 4.8) {
+        playFoley(stepMark % 2 === 0 ? 'hop' : 'land');
+      }
+    }
+  }
+
+  function tick(timestamp) {
+    if (!state.lastTimestamp) state.lastTimestamp = timestamp;
+    const dt = (timestamp - state.lastTimestamp) / 1000;
+    state.lastTimestamp = timestamp;
+
+    if (state.playing) {
+      const prevT = state.time;
+      state.time = clamp(state.time + dt * state.speed, 0, DURATION);
+      checkFoleyEvents(prevT, state.time);
+      if (state.time >= DURATION) {
+        state.playing = false;
+      }
+    }
+
+    render();
+    animFrameId = requestAnimationFrame(tick);
+  }
+
+  window.togglePlay = function () {
+    ensureAudio();
+    if (!state.playing && state.time >= DURATION) {
+      state.time = 0;
+      state.lastSoundStep = -1;
+    }
+    state.playing = !state.playing;
+    state.lastTimestamp = performance.now();
+    render();
+  };
+
+  window.restartAnimation = function () {
+    state.time = 0;
+    state.lastSoundStep = -1;
+    state.playing = true;
+    state.lastTimestamp = performance.now();
+    render();
+  };
+
+  window.stepFrames = function (deltaFrames) {
+    state.playing = false;
+    state.time = clamp(state.time + deltaFrames / FPS, 0, DURATION);
+    render();
+  };
+
+  window.scrubTimeline = function (val) {
+    state.playing = false;
+    state.time = clamp(Number(val) || 0, 0, DURATION);
+    render();
+  };
+
+  window.jumpToBeat = function (sec) {
+    state.playing = false;
+    state.time = clamp(Number(sec) || 0, 0, DURATION);
+    render();
+  };
+
+  window.setTargetLetter = function (idx) {
+    state.targetIndex = idx === 3 ? 3 : 2;
+    document.getElementById('btn-target-2').setAttribute('aria-pressed', String(state.targetIndex === 2));
+    document.getElementById('btn-target-3').setAttribute('aria-pressed', String(state.targetIndex === 3));
+    render();
+  };
+
+  window.setSpeed = function (spd) {
+    state.speed = Number(spd) || 1;
+    document.querySelectorAll('[data-speed]').forEach(function (btn) {
+      btn.setAttribute('aria-pressed', String(Number(btn.dataset.speed) === state.speed));
+    });
+    render();
+  };
+
+  window.setLighting = function (mode) {
+    state.lighting = mode === 'night' ? 'night' : 'day';
+    document.getElementById('btn-light-day').setAttribute('aria-pressed', String(state.lighting === 'day'));
+    document.getElementById('btn-light-night').setAttribute('aria-pressed', String(state.lighting === 'night'));
+    render();
+  };
+
+  window.setEntrySide = function (side) {
+    state.entrySide = side === 'left' ? 'left' : 'right';
+    document.getElementById('btn-dir-right').setAttribute('aria-pressed', String(state.entrySide === 'right'));
+    document.getElementById('btn-dir-left').setAttribute('aria-pressed', String(state.entrySide === 'left'));
+    render();
+  };
+
+  window.toggleSound = function () {
+    state.soundEnabled = !state.soundEnabled;
+    const btn = document.getElementById('sound-btn');
+    const lbl = document.getElementById('sound-label');
+    btn.setAttribute('aria-pressed', String(state.soundEnabled));
+    lbl.textContent = state.soundEnabled ? 'Sonido: Sí' : 'Sonido: No';
+    if (state.soundEnabled) ensureAudio();
+  };
+
+  window.toggleGuide = function (kind, checked) {
+    if (kind === 'arcs') state.showArcs = Boolean(checked);
+    if (kind === 'rig') state.showRig = Boolean(checked);
+    render();
+  };
+
+  const canvasEl = document.getElementById('pixar-stage');
+  function getStageCoords(evt) {
+    const rect = canvasEl.getBoundingClientRect();
+    const scaleX = STAGE_W / Math.max(1, rect.width);
+    const scaleY = STAGE_H / Math.max(1, rect.height);
+    return {
+      x: (evt.clientX - rect.left) * scaleX,
+      y: (evt.clientY - rect.top) * scaleY
+    };
+  }
+
+  function findLetterAt(x, y) {
+    if (y < FLOOR_Y - LETTER_BASE_H - 25 || y > FLOOR_Y + 12) return -1;
+    for (let i = 0; i < LETTERS.length; i++) {
+      if (Math.abs(x - getLetterX(i)) <= LETTER_SPACING * 0.44) return i;
+    }
+    return -1;
+  }
+
+  canvasEl.addEventListener('pointermove', function (evt) {
+    const pt = getStageCoords(evt);
+    const hit = findLetterAt(pt.x, pt.y);
+    state.hoverLetter = hit;
+    const hint = document.getElementById('hover-letter-hint');
+    hint.textContent = hit >= 0
+      ? `Clic para enfocar letra "${LETTERS[hit]}"`
+      : (state.playing ? 'Reproduciendo secuencia' : 'Pausado · Clic para reproducir');
+  });
+
+  canvasEl.addEventListener('pointerleave', function () {
+    state.hoverLetter = -1;
+  });
+
+  canvasEl.addEventListener('click', function (evt) {
+    const pt = getStageCoords(evt);
+    const hit = findLetterAt(pt.x, pt.y);
+    if (hit === 2 || hit === 3) {
+      window.setTargetLetter(hit);
+      window.jumpToBeat(4.8);
+      return;
+    }
+    window.togglePlay();
+  });
+
+  loadPalette();
+  render();
+  animFrameId = requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
