@@ -1040,6 +1040,7 @@
         <button type="button" class="nav-btn active" data-view="inicio">Inicio</button>
         <button type="button" class="nav-btn" data-view="cv">CV</button>
         <button type="button" class="nav-btn" data-view="portafolio">Portafolio</button>
+        <button type="button" class="nav-btn" data-view="fine-art">Fine Art</button>
         <button type="button" class="nav-btn" data-view="sobre-mi">Sobre mí</button>
         <button type="button" class="nav-btn" data-view="proyectos">Proyectos</button>
         <button type="button" class="nav-btn" data-view="recursos">Recursos</button>
@@ -1599,7 +1600,7 @@
               <div class="project-info">
                 <h3>pabljs.dev</h3>
                 <p>Hub central de identidad técnica, proyectos, bitácora y contacto profesional.</p>
-                <button type="button" class="nav-btn active" id="btn-ir-fine-art" style="margin-top: 12px; display: inline-flex; align-items: center; gap: 6px;">Fine Art</button>
+                <button type="button" class="nav-btn active" id="btn-ir-fine-art" data-view="fine-art" style="margin-top: 12px; display: inline-flex; align-items: center; gap: 6px;">Fine Art</button>
               </div>
             </div>
             <div class="project-preview">
@@ -1611,11 +1612,17 @@
 
 
 
-        <div id="fine-art-section" style="margin-top: 48px;">
-          <div class="section-head">
-            <h3>Fine Art · Galería</h3>
-            <p>Selección visual de 36 piezas en formato optimizado.</p>
-          </div>
+              </section>
+    </div>
+
+    <!-- VISTA DEDICADA: FINE ART -->
+    <div class="view-panel" id="view-fine-art">
+      <section style="padding: 64px 0 36px;">
+        <div class="section-head">
+          <h2>Fine Art · Galería</h2>
+          <p>HOLA, Nuestro jefe PABLO ha diseñado esta Colección visual interactiva. Toca cada carta para revelarla y ábrela en pantalla completa.</p>
+        </div>
+        <div id="fine-art-section" style="margin-top: 0;">
           <div id="fine-art-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; margin-top: 20px;"></div>
         </div>
         <script id="fine-art-gallery-loader">
@@ -1706,52 +1713,48 @@
                   border: 1px solid var(--border-strong, rgba(255,255,255,0.18));
                 }
                                                 .fa-card-back {
-                  background:
-                    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.06) 0%, rgba(8, 9, 12, 0.96) 72%),
-                    #07080a;
-                  border: 1px solid rgba(255, 255, 255, 0.16);
+                  background: #06090d;
+                  border: 1px solid rgba(45, 212, 191, 0.35);
                   border-radius: 14px;
-                  display: flex;
-                  flex-direction: column;
-                  align-items: center;
-                  justify-content: space-between;
-                  padding: 12px;
-                  text-align: center;
+                  position: relative;
+                  overflow: hidden;
+                  padding: 0;
                   transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
                 }
                 .fa-card-scene:not(.is-flipped):hover .fa-card-back {
-                  border-color: rgba(255, 255, 255, 0.52);
+                  border-color: rgba(45, 212, 191, 0.85);
                   transform: translateY(-4px);
-                  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.65);
+                  box-shadow: 0 14px 32px rgba(20, 184, 166, 0.24);
                 }
-                .fa-emblem-wrap {
-                  position: relative;
+                .fa-card-back-img {
                   width: 100%;
-                  flex: 1;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  min-height: 0;
-                }
-                .fa-yuc-card-svg {
-                  width: min(86%, 144px);
-                  height: auto;
+                  height: 100%;
+                  object-fit: cover;
                   display: block;
-                  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.75));
                 }
-                .fa-card-num {
-                  font-size: 0.78rem;
-                  letter-spacing: 0.14em;
-                  text-transform: uppercase;
-                  opacity: 0.7;
+                .fa-card-overlay-top,
+                .fa-card-overlay-bottom {
+                  position: absolute;
+                  left: 0;
+                  right: 0;
+                  z-index: 2;
+                  text-align: center;
+                  pointer-events: none;
                 }
-                .fa-card-sigil {
-                  font-size: 1.35rem;
-                  line-height: 1;
+                .fa-card-overlay-top {
+                  top: 0;
+                  font-size: 0.76rem;
+                  letter-spacing: 0.12em;
+                  color: #f8fafc;
+                  background: linear-gradient(to bottom, rgba(4, 7, 11, 0.82), transparent);
+                  padding: 8px 8px 12px;
                 }
-                .fa-card-hint {
-                  font-size: 0.75rem;
-                  opacity: 0.65;
+                .fa-card-overlay-bottom {
+                  bottom: 0;
+                  font-size: 0.74rem;
+                  color: #f1f5f9;
+                  background: linear-gradient(to top, rgba(4, 7, 11, 0.88), transparent);
+                  padding: 14px 8px 8px;
                 }
                 .fa-card-front {
                   transform: rotateY(180deg);
@@ -1925,7 +1928,7 @@
                 const flippedCount = grid.querySelectorAll(".fa-card-scene.is-flipped").length;
                 if (!promptEl) return;
                 if (flippedCount === 0) {
-                  promptEl.textContent = `Escoge una de las ${images.length} cartas volteadas para que gire.`;
+                  promptEl.textContent = `Escoge una de las ${images.length} cartas volteadas para que gire .`;
                 } else {
                   promptEl.textContent = `Cartas giradas: ${flippedCount} / ${images.length} · Toca una carta revelada para pantalla completa.`;
                 }
@@ -1943,41 +1946,8 @@
                 const back = document.createElement("div");
                 back.className = "fa-card-face fa-card-back";
                                                 back.innerHTML = `
-                  <span class="fa-card-num" style="color:#d4d4d8;opacity:0.85;">#${idx + 1}</span>
-                  <div class="fa-emblem-wrap">
-                    <svg class="fa-yuc-card-svg" viewBox="0 0 220 220" fill="none" aria-hidden="true">
-                      <defs>
-                        <clipPath id="yucDiscClip${idx}">
-                          <circle cx="110" cy="110" r="98"/>
-                        </clipPath>
-                      </defs>
-                      <g clip-path="url(#yucDiscClip${idx})">
-                        <rect x="0" y="0" width="220" height="220" fill="#090a0d"/>
-                        <!-- Líneas topográficas y retícula sutil de fondo -->
-                        <g stroke="rgba(255,255,255,0.12)" stroke-width="1">
-                          <line x1="0" y1="55" x2="220" y2="55"/>
-                          <line x1="0" y1="110" x2="220" y2="110"/>
-                          <line x1="0" y1="165" x2="220" y2="165"/>
-                          <line x1="55" y1="0" x2="55" y2="220"/>
-                          <line x1="110" y1="0" x2="110" y2="220"/>
-                          <line x1="165" y1="0" x2="165" y2="220"/>
-                        </g>
-                        <path d="M18 178 C52 142, 74 118, 108 106 C142 94, 168 62, 206 36" stroke="rgba(255,255,255,0.18)" stroke-width="1.2"/>
-                        <path d="M12 152 C48 122, 78 96, 114 82 C148 68, 174 44, 212 20" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
-                        <path d="M26 202 C64 166, 92 142, 128 128 C162 114, 184 86, 210 64" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-                        <!-- Contorno estilizado de la península -->
-                        <path d="M76 196 L92 158 L112 126 L132 94 L152 64 L168 46 L176 58 L170 84 L158 118 L142 154 L126 196 Z" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.24)" stroke-width="1.3"/>
-                        <!-- Triángulo superior -->
-                        <polygon points="110,44 74,104 146,104" fill="#ffffff"/>
-                        <!-- Corchete izquierdo [ -->
-                        <path d="M84 122 H64 V178 H84" stroke="#ffffff" stroke-width="11" stroke-linecap="square" fill="none"/>
-                        <!-- Corchete derecho ] -->
-                        <path d="M136 122 H156 V178 H136" stroke="#ffffff" stroke-width="11" stroke-linecap="square" fill="none"/>
-                      </g>
-                      <circle cx="110" cy="110" r="98" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" fill="none"/>
-                    </svg>
-                  </div>
-                  <span class="fa-card-hint" style="color:#d4d4d8;">Toca para girar</span>
+                  <img class="fa-card-back-img" src="assets/card-back-tsibko-core.jpg" alt="Dorso de carta — TS'ÍIBKO" loading="lazy" decoding="async" />
+                  <span class="fa-card-overlay-bottom">Toca para girar</span>
                 `;
 
                 const front = document.createElement("div");
@@ -2222,7 +2192,7 @@
 
       const navBtns = document.querySelectorAll(".nav-links .nav-btn");
       if (navBtns[0]) navBtns[0].textContent = t.navInicio;
-      if (navBtns[2]) navBtns[2].textContent = t.navPortafolio;
+      const portBtn = document.querySelector('.nav-links .nav-btn[data-view="portafolio"]'); if (portBtn) portBtn.textContent = t.navPortafolio;
 
       const heroTag = document.querySelector(".hero-tag");
       const heroTitle = document.querySelector(".hero h1");
