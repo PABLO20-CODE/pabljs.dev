@@ -1620,10 +1620,6 @@
         </div>
         <script id="fine-art-gallery-loader">
           (() => {
-            const grid = document.getElementById("fine-art-grid");
-            if (!grid || grid.dataset.loaded) return;
-            grid.dataset.loaded = "true";
-
             const images = [
               "assets/gallery_processed/foto1.jpg",
               "assets/gallery_processed/foto10.jpg",
@@ -1656,48 +1652,356 @@
               "assets/gallery_processed/foto9.jpg"
             ];
 
-            const section = document.getElementById("fine-art-section");
-            const countLabel = section ? section.querySelector(".section-head p") : null;
-            if (countLabel) {
-              countLabel.textContent = `Selección visual de ${images.length} piezas en formato optimizado.`;
+            let currentIndex = 0;
+
+            function ensureStyles() {
+              if (document.getElementById("fine-art-tarot-styles")) return;
+              const style = document.createElement("style");
+              style.id = "fine-art-tarot-styles";
+              style.textContent = `
+                .fa-toolbar {
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: center;
+                  justify-content: space-between;
+                  gap: 12px;
+                  margin-top: 16px;
+                  padding: 12px 16px;
+                  border-radius: 14px;
+                  background: var(--surface, rgba(255,255,255,0.03));
+                  border: 1px solid var(--border, rgba(255,255,255,0.1));
+                }
+                .fa-prompt {
+                  font-size: 0.92rem;
+                  color: var(--muted, #b5b5be);
+                }
+                .fa-actions {
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 8px;
+                }
+                .fa-card-scene {
+                  perspective: 1100px;
+                  aspect-ratio: 3 / 4;
+                  cursor: pointer;
+                  user-select: none;
+                }
+                .fa-card-inner {
+                  position: relative;
+                  width: 100%;
+                  height: 100%;
+                  transform-style: preserve-3d;
+                  transition: transform 0.68s cubic-bezier(0.22, 1, 0.36, 1);
+                }
+                .fa-card-scene.is-flipped .fa-card-inner {
+                  transform: rotateY(180deg);
+                }
+                .fa-card-face {
+                  position: absolute;
+                  inset: 0;
+                  backface-visibility: hidden;
+                  -webkit-backface-visibility: hidden;
+                  border-radius: 12px;
+                  overflow: hidden;
+                  border: 1px solid var(--border-strong, rgba(255,255,255,0.18));
+                }
+                .fa-card-back {
+                  background:
+                    radial-gradient(circle at 50% 35%, rgba(255,255,255,0.09), transparent 60%),
+                    repeating-linear-gradient(45deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 2px, transparent 2px, transparent 10px),
+                    var(--surface-elevated, #15151b);
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  gap: 8px;
+                  padding: 12px;
+                  text-align: center;
+                  transition: border-color 0.25s ease, transform 0.25s ease;
+                }
+                .fa-card-scene:not(.is-flipped):hover .fa-card-back {
+                  border-color: var(--accent, #c8ff57);
+                  transform: translateY(-4px);
+                }
+                .fa-card-num {
+                  font-size: 0.78rem;
+                  letter-spacing: 0.14em;
+                  text-transform: uppercase;
+                  opacity: 0.7;
+                }
+                .fa-card-sigil {
+                  font-size: 1.35rem;
+                  line-height: 1;
+                }
+                .fa-card-hint {
+                  font-size: 0.75rem;
+                  opacity: 0.65;
+                }
+                .fa-card-front {
+                  transform: rotateY(180deg);
+                  background: #0d0d10;
+                }
+                .fa-card-front img {
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                  display: block;
+                }
+                .fa-card-badge {
+                  position: absolute;
+                  left: 8px;
+                  bottom: 8px;
+                  right: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  gap: 6px;
+                  padding: 6px 9px;
+                  border-radius: 8px;
+                  background: rgba(10, 10, 14, 0.78);
+                  backdrop-filter: blur(6px);
+                  font-size: 0.75rem;
+                  color: #fff;
+                }
+                .fa-lightbox {
+                  position: fixed;
+                  inset: 0;
+                  z-index: 9999;
+                  background: rgba(6, 6, 9, 0.95);
+                  display: none;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  padding: 20px;
+                  gap: 14px;
+                }
+                .fa-lightbox.is-open {
+                  display: flex;
+                }
+                .fa-lightbox img {
+                  max-width: min(92vw, 1200px);
+                  max-height: 78vh;
+                  width: auto;
+                  height: auto;
+                  object-fit: contain;
+                  border-radius: 10px;
+                  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+                }
+                .fa-lightbox-bar {
+                  width: min(92vw, 1200px);
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: center;
+                  justify-content: space-between;
+                  gap: 10px;
+                }
+              `;
+              document.head.appendChild(style);
             }
 
-            const frag = document.createDocumentFragment();
-            images.forEach((src, idx) => {
-              const card = document.createElement("figure");
-              card.style.margin = "0";
-              card.style.overflow = "hidden";
-              card.style.borderRadius = "10px";
-              card.style.aspectRatio = "4 / 3";
-              card.style.background = "rgba(255, 255, 255, 0.04)";
+            function ensureLightbox() {
+              if (document.getElementById("faLightbox")) return;
+              const lb = document.createElement("div");
+              lb.id = "faLightbox";
+              lb.className = "fa-lightbox";
+              lb.setAttribute("role", "dialog");
+              lb.setAttribute("aria-modal", "true");
+              lb.innerHTML = `
+                <div class="fa-lightbox-bar">
+                  <span id="faLightboxTitle" style="font-size:0.9rem;color:#e5e5ec;"></span>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button type="button" class="nav-btn" id="faPrevBtn">← Anterior</button>
+                    <button type="button" class="nav-btn" id="faNextBtn">Siguiente →</button>
+                    <button type="button" class="nav-btn active" id="faFsBtn">Pantalla completa</button>
+                    <button type="button" class="nav-btn" id="faCloseBtn">Cerrar ✕</button>
+                  </div>
+                </div>
+                <img id="faLightboxImg" src="" alt="" />
+              `;
+              document.body.appendChild(lb);
 
-              const img = document.createElement("img");
-              img.src = src;
-              img.alt = `Obra Fine Art ${idx + 1}`;
-              img.loading = "lazy";
-              img.decoding = "async";
-              img.style.width = "100%";
-              img.style.height = "100%";
-              img.style.objectFit = "cover";
-              img.style.display = "block";
+              const updateView = (idx) => {
+                currentIndex = (idx + images.length) % images.length;
+                const imgEl = document.getElementById("faLightboxImg");
+                const titleEl = document.getElementById("faLightboxTitle");
+                if (imgEl) {
+                  imgEl.src = images[currentIndex];
+                  imgEl.alt = `Obra Fine Art ${currentIndex + 1} de ${images.length}`;
+                }
+                if (titleEl) {
+                  titleEl.textContent = `Carta #${currentIndex + 1} de ${images.length}`;
+                }
+              };
 
-              card.appendChild(img);
-              frag.appendChild(card);
-            });
+              window.__openFineArtLightbox = (idx, tryFullscreen = false) => {
+                updateView(idx);
+                lb.classList.add("is-open");
+                if (tryFullscreen && lb.requestFullscreen) {
+                  lb.requestFullscreen().catch(() => {});
+                }
+              };
 
-            grid.appendChild(frag);
+              const closeLb = () => {
+                if (document.fullscreenElement && document.exitFullscreen) {
+                  document.exitFullscreen().catch(() => {});
+                }
+                lb.classList.remove("is-open");
+              };
 
-            const btnIrFineArt = document.getElementById("btn-ir-fine-art");
-            if (btnIrFineArt && section) {
-              btnIrFineArt.addEventListener("click", (e) => {
-                e.preventDefault();
-                const portafolioTab = document.querySelector('[data-view="portafolio"]');
-                if (portafolioTab) portafolioTab.click();
-                setTimeout(() => {
-                  section.scrollIntoView({ behavior: "smooth", block: "start" });
-                }, 80);
+              document.getElementById("faPrevBtn").addEventListener("click", () => updateView(currentIndex - 1));
+              document.getElementById("faNextBtn").addEventListener("click", () => updateView(currentIndex + 1));
+              document.getElementById("faCloseBtn").addEventListener("click", closeLb);
+              document.getElementById("faFsBtn").addEventListener("click", () => {
+                if (!document.fullscreenElement && lb.requestFullscreen) {
+                  lb.requestFullscreen().catch(() => {});
+                } else if (document.fullscreenElement && document.exitFullscreen) {
+                  document.exitFullscreen().catch(() => {});
+                }
+              });
+
+              lb.addEventListener("click", (e) => {
+                if (e.target === lb) closeLb();
+              });
+
+              document.addEventListener("keydown", (e) => {
+                if (!lb.classList.contains("is-open")) return;
+                if (e.key === "Escape") closeLb();
+                if (e.key === "ArrowLeft") updateView(currentIndex - 1);
+                if (e.key === "ArrowRight") updateView(currentIndex + 1);
               });
             }
+
+            function renderFineArt() {
+              ensureStyles();
+              ensureLightbox();
+
+              const grid = document.getElementById("fine-art-grid");
+              if (!grid) return;
+              const section = document.getElementById("fine-art-section");
+              const countLabel = section ? section.querySelector(".section-head p") : null;
+              if (countLabel) {
+                countLabel.textContent = `Escoge una de las ${images.length} cartas volteadas para girarla y verla en pantalla completa.`;
+              }
+              if (grid.dataset.loaded) return;
+              grid.dataset.loaded = "true";
+
+              grid.style.gridTemplateColumns = "repeat(auto-fill, minmax(175px, 1fr))";
+              grid.style.gap = "16px";
+
+              let toolbar = document.getElementById("faToolbar");
+              if (!toolbar && section) {
+                toolbar = document.createElement("div");
+                toolbar.id = "faToolbar";
+                toolbar.className = "fa-toolbar";
+                toolbar.innerHTML = `
+                  <span class="fa-prompt" id="faPrompt">Elige una carta boca abajo (${images.length} disponibles) para girarla.</span>
+                  <div class="fa-actions">
+                    <button type="button" class="nav-btn active" id="faRandomBtn">Elegir al azar</button>
+                    <button type="button" class="nav-btn" id="faRevealAllBtn">Voltear todas</button>
+                    <button type="button" class="nav-btn" id="faResetBtn">Boca abajo</button>
+                  </div>
+                `;
+                grid.parentNode.insertBefore(toolbar, grid);
+              }
+
+              const updatePrompt = () => {
+                const promptEl = document.getElementById("faPrompt");
+                const flippedCount = grid.querySelectorAll(".fa-card-scene.is-flipped").length;
+                if (!promptEl) return;
+                if (flippedCount === 0) {
+                  promptEl.textContent = `Escoge una de las ${images.length} cartas volteadas para que gire.`;
+                } else {
+                  promptEl.textContent = `Cartas giradas: ${flippedCount} / ${images.length} · Toca una carta revelada para pantalla completa.`;
+                }
+              };
+
+              const frag = document.createDocumentFragment();
+              images.forEach((src, idx) => {
+                const scene = document.createElement("div");
+                scene.className = "fa-card-scene";
+                scene.dataset.index = String(idx);
+
+                const inner = document.createElement("div");
+                inner.className = "fa-card-inner";
+
+                const back = document.createElement("div");
+                back.className = "fa-card-face fa-card-back";
+                back.innerHTML = `
+                  <span class="fa-card-num">CARTA #${idx + 1}</span>
+                  <span class="fa-card-sigil">✦</span>
+                  <span class="fa-card-hint">Toca para girar</span>
+                `;
+
+                const front = document.createElement("div");
+                front.className = "fa-card-face fa-card-front";
+
+                const img = document.createElement("img");
+                img.src = src;
+                img.alt = `Obra Fine Art ${idx + 1}`;
+                img.loading = "lazy";
+                img.decoding = "async";
+
+                const badge = document.createElement("div");
+                badge.className = "fa-card-badge";
+                badge.innerHTML = `<span>#${idx + 1}</span><span>Pantalla completa ⤢</span>`;
+
+                front.appendChild(img);
+                front.appendChild(badge);
+                inner.appendChild(back);
+                inner.appendChild(front);
+                scene.appendChild(inner);
+
+                scene.addEventListener("click", () => {
+                  if (!scene.classList.contains("is-flipped")) {
+                    scene.classList.add("is-flipped");
+                    updatePrompt();
+                  } else {
+                    window.__openFineArtLightbox(idx, true);
+                  }
+                });
+
+                frag.appendChild(scene);
+              });
+
+              grid.appendChild(frag);
+              updatePrompt();
+
+              document.getElementById("faRandomBtn")?.addEventListener("click", () => {
+                const randomIdx = Math.floor(Math.random() * images.length);
+                const targetCard = grid.querySelector(`.fa-card-scene[data-index="${randomIdx}"]`);
+                if (targetCard) {
+                  targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
+                  targetCard.classList.add("is-flipped");
+                  updatePrompt();
+                  setTimeout(() => window.__openFineArtLightbox(randomIdx, false), 650);
+                }
+              });
+
+              document.getElementById("faRevealAllBtn")?.addEventListener("click", () => {
+                grid.querySelectorAll(".fa-card-scene").forEach((card, i) => {
+                  setTimeout(() => {
+                    card.classList.add("is-flipped");
+                    updatePrompt();
+                  }, i * 25);
+                });
+              });
+
+              document.getElementById("faResetBtn")?.addEventListener("click", () => {
+                grid.querySelectorAll(".fa-card-scene").forEach((card) => {
+                  card.classList.remove("is-flipped");
+                });
+                updatePrompt();
+              });
+            }
+
+            renderFineArt();
+
+            document.addEventListener("click", (ev) => {
+              const trigger = ev.target.closest('[data-view="fine-art"]');
+              if (trigger) {
+                setTimeout(renderFineArt, 30);
+              }
+            });
           })();
         </script>
       </section>
