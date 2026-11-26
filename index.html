@@ -1525,49 +1525,6 @@
             </div>
           </div>
         </div>
-
-        <div id="fine-art-section" style="margin-top: 48px;">
-          <div class="section-head">
-            <h3>Fine Art · Galería</h3>
-            <p>Selección visual de 36 piezas en formato optimizado.</p>
-          </div>
-          <div id="fine-art-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; margin-top: 20px;"></div>
-        </div>
-
-        <script id="fine-art-gallery-loader">
-          (() => {
-            const grid = document.getElementById("fine-art-grid");
-            if (!grid || grid.dataset.loaded) return;
-            grid.dataset.loaded = "true";
-
-            const total = 36;
-            const frag = document.createDocumentFragment();
-
-            for (let i = 1; i <= total; i++) {
-              const card = document.createElement("figure");
-              card.style.margin = "0";
-              card.style.overflow = "hidden";
-              card.style.borderRadius = "10px";
-              card.style.aspectRatio = "4 / 3";
-              card.style.background = "rgba(255, 255, 255, 0.04)";
-
-              const img = document.createElement("img");
-              img.src = `assets/gallery_processed/foto${i}.jpg`;
-              img.alt = `Obra Fine Art ${i}`;
-              img.loading = "lazy";
-              img.decoding = "async";
-              img.style.width = "100%";
-              img.style.height = "100%";
-              img.style.objectFit = "cover";
-              img.style.display = "block";
-
-              card.appendChild(img);
-              frag.appendChild(card);
-            }
-
-            grid.appendChild(frag);
-          })();
-        </script>
       </section>
     </div>
 
@@ -1642,6 +1599,7 @@
               <div class="project-info">
                 <h3>pabljs.dev</h3>
                 <p>Hub central de identidad técnica, proyectos, bitácora y contacto profesional.</p>
+                <button type="button" class="nav-btn active" id="btn-ir-fine-art" style="margin-top: 12px; display: inline-flex; align-items: center; gap: 6px;">Fine Art</button>
               </div>
             </div>
             <div class="project-preview">
@@ -1650,6 +1608,98 @@
             </div>
           </article>
         </div>
+
+
+
+        <div id="fine-art-section" style="margin-top: 48px;">
+          <div class="section-head">
+            <h3>Fine Art · Galería</h3>
+            <p>Selección visual de 36 piezas en formato optimizado.</p>
+          </div>
+          <div id="fine-art-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; margin-top: 20px;"></div>
+        </div>
+        <script id="fine-art-gallery-loader">
+          (() => {
+            const grid = document.getElementById("fine-art-grid");
+            if (!grid || grid.dataset.loaded) return;
+            grid.dataset.loaded = "true";
+
+            const images = [
+              "assets/gallery_processed/foto1.jpg",
+              "assets/gallery_processed/foto10.jpg",
+              "assets/gallery_processed/foto11.jpg",
+              "assets/gallery_processed/foto12.jpg",
+              "assets/gallery_processed/foto13.jpg",
+              "assets/gallery_processed/foto14.jpg",
+              "assets/gallery_processed/foto15.jpg",
+              "assets/gallery_processed/foto16.jpg",
+              "assets/gallery_processed/foto17.jpg",
+              "assets/gallery_processed/foto18.jpg",
+              "assets/gallery_processed/foto19.jpg",
+              "assets/gallery_processed/foto2.jpg",
+              "assets/gallery_processed/foto20.jpg",
+              "assets/gallery_processed/foto21.jpg",
+              "assets/gallery_processed/foto24.jpg",
+              "assets/gallery_processed/foto25.jpg",
+              "assets/gallery_processed/foto26.jpg",
+              "assets/gallery_processed/foto27.jpg",
+              "assets/gallery_processed/foto28.jpg",
+              "assets/gallery_processed/foto29.jpg",
+              "assets/gallery_processed/foto30.jpg",
+              "assets/gallery_processed/foto31.jpg",
+              "assets/gallery_processed/foto34.jpg",
+              "assets/gallery_processed/foto36.jpg",
+              "assets/gallery_processed/foto4.jpg",
+              "assets/gallery_processed/foto5.jpg",
+              "assets/gallery_processed/foto6.jpg",
+              "assets/gallery_processed/foto8.jpg",
+              "assets/gallery_processed/foto9.jpg"
+            ];
+
+            const section = document.getElementById("fine-art-section");
+            const countLabel = section ? section.querySelector(".section-head p") : null;
+            if (countLabel) {
+              countLabel.textContent = `Selección visual de ${images.length} piezas en formato optimizado.`;
+            }
+
+            const frag = document.createDocumentFragment();
+            images.forEach((src, idx) => {
+              const card = document.createElement("figure");
+              card.style.margin = "0";
+              card.style.overflow = "hidden";
+              card.style.borderRadius = "10px";
+              card.style.aspectRatio = "4 / 3";
+              card.style.background = "rgba(255, 255, 255, 0.04)";
+
+              const img = document.createElement("img");
+              img.src = src;
+              img.alt = `Obra Fine Art ${idx + 1}`;
+              img.loading = "lazy";
+              img.decoding = "async";
+              img.style.width = "100%";
+              img.style.height = "100%";
+              img.style.objectFit = "cover";
+              img.style.display = "block";
+
+              card.appendChild(img);
+              frag.appendChild(card);
+            });
+
+            grid.appendChild(frag);
+
+            const btnIrFineArt = document.getElementById("btn-ir-fine-art");
+            if (btnIrFineArt && section) {
+              btnIrFineArt.addEventListener("click", (e) => {
+                e.preventDefault();
+                const portafolioTab = document.querySelector('[data-view="portafolio"]');
+                if (portafolioTab) portafolioTab.click();
+                setTimeout(() => {
+                  section.scrollIntoView({ behavior: "smooth", block: "start" });
+                }, 80);
+              });
+            }
+          })();
+        </script>
       </section>
     </div>
   </main>
