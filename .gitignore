@@ -2,3 +2,4 @@
 *.respaldo
 assets/gallery/
 process_gallery.py
+.gallery_duplicates_bak/
